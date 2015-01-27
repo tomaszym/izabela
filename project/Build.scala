@@ -32,6 +32,8 @@ object Resolvers {
 
 object Dependencies {
 
+  lazy val trelloilaro = "org.tejo" %% "trelloilaro" % "0.2"
+
   lazy val scalaTest = "org.scalatest" % "scalatest_2.11" % "2.2.1" % "test"
 
   lazy val clojureLib = "org.clojure" % "clojure" % "1.6.0"
@@ -44,7 +46,7 @@ object Dependencies {
     "org.clapper" %% "grizzled-slf4j" % "1.0.2",
     "ch.qos.logback" % "logback-classic" % "1.1.2")
 
-  def list = List(scalaTest, clojureLib, clara) ++ logger
+  def list = List(scalaTest, clojureLib, clara, trelloilaro) ++ logger
 }
 
 object StashekBuild extends Build {

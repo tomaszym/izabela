@@ -2,7 +2,8 @@
   (:refer-clojure :exclude [==])
   (:require [clara.rules.accumulators :as acc]
             [clara.rules :refer :all])
-  (:import [clara.examples.java Customer Order Promotion]))
+  (:import [clara.examples.java Order Promotion]
+           [org.tejo.stashek.cirkulerilo.facts Customer]))
 
 (defrule awesome-promotion-for-vips
    "Creates an awesome promotion for VIPs that spend more than $200"
