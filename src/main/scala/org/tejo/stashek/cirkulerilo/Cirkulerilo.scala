@@ -10,7 +10,9 @@ class Cirkulerilo {
 
   def run: Unit = {
 
-    val trelloClient = TrelloClientFacade("ea98147379cdbf813a69190a9228ca34","53aef54598654cd1f4486f08")
+//    Thread.currentThread.setContextClassLoader(classOf[Cirkulerilo].getClassLoader)
+
+    val trelloClient = TrelloClientFacade("ea98147379cdbf813a69190a9228ca34","54c4e18f2ab48fa15f8a1120")
 
     import trelloClient.client.system.dispatcher
 
@@ -20,13 +22,15 @@ class Cirkulerilo {
 
     println(facts)
 
-    Thread.currentThread.setContextClassLoader(classOf[Cirkulerilo].getClassLoader)
 
     val emptyMemory: WorkingMemory = RuleLoader.loadRules("cirkulerilo")
 
 
     // Insert some facts and fire the rules.
     val memory: WorkingMemory = emptyMemory.insert(facts.asJavaIterable).fireRules
+
+
+    println("rules fired!")
 
 //    // Run the promotion query and print the results.
 //    import scala.collection.JavaConversions._

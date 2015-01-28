@@ -23,13 +23,14 @@ object ChecklistFact {
   }
 }
 
-case class CheckItem(id: String, name: String, pos: Int, isCompleted: Boolean)
+@BeanInfo
+case class CheckItem(id: String, name: String, pos: Int, state: String)
 
 object CheckItem {
 
   def apply(json: CheckItemJson): CheckItem = {
 
-    CheckItem(json.id, json.name.get, json.pos.get, json.state.get == "completed")
+    CheckItem(json.id, json.name.get, json.pos.get, json.state.get)
 
   }
 }
