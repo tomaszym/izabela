@@ -1,4 +1,4 @@
-package org.tejo.stashek.cirkulerilo.facts
+package org.tejo.iza.rules.facts
 
 import scala.beans.BeanInfo
 

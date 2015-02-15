@@ -2,6 +2,7 @@ import com.unhandledexpression.sbtclojure.ClojurePlugin.clojure._
 import com.unhandledexpression.sbtclojure.ClojurePlugin._
 import sbt._
 import sbt.Keys._
+import play.PlayImport._
 
 import scala._
 
@@ -13,7 +14,7 @@ object BuildSettings {
   val buildSettings = Defaults.coreDefaultSettings ++ Seq(
     version := buildVersion,
     scalaVersion := buildScalaVersion,
-    libraryDependencies ++= Dependencies.list,
+    libraryDependencies ++= Dependencies.base,
     resolvers ++= Resolvers.list,
     testOptions in Test += Tests.Argument("-oD")
   )
@@ -24,39 +25,107 @@ object BuildSettings {
 
 object Resolvers {
 
-
   lazy val clojars = "Clojars" at "https://clojars.org/repo"
+  lazy val scalaz = "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases"
 
-  lazy val list = List(clojars)
+  lazy val list = List(clojars, scalaz)
 }
 
 object Dependencies {
 
-  lazy val trelloilaro = "org.tejo" %% "trelloilaro" % "0.2"
+  lazy val trelloilaro = "org.tejo" %% "trelloilaro" % "0.0.3"
 
-  lazy val scalaTest = "org.scalatest" % "scalatest_2.11" % "2.2.1" % "test"
+  lazy val scalaTest = "org.scalatest" %% "scalatest" % "2.2.1" % "test"
 
   lazy val clojureLib = "org.clojure" % "clojure" % "1.6.0"
 
+  val akkaVersion = "2.3.5"
+
+  val akkaActor = "com.typesafe.akka" %% "akka-actor" % akkaVersion
+  val akkaTest = "com.typesafe.akka" %% "akka-testkit" % akkaVersion
+  val akkaSlf4j = "com.typesafe.akka" %% "akka-slf4j" % akkaVersion
+
+  val akka = akkaActor :: akkaTest :: akkaSlf4j :: Nil
+
+  //  val typesafeConsole = "com.typesafe.atmos" % "trace-play-2.2.0" % "1.3.1"
+
 //  lazy val clojureInClojure = "org.clojure" % "clojure" % "1.5.1" % clojure.Config.name
 
-  lazy val clara = "org.toomuchcode" % "clara-rules" % "0.8.2"
+  lazy val clara = "org.toomuchcode" % "clara-rules" % "0.8.3"
+
+  lazy val ficus = "net.ceedubs" %% "ficus" % "1.1.1"
 
   lazy val logger = Seq(
     "org.clapper" %% "grizzled-slf4j" % "1.0.2",
     "ch.qos.logback" % "logback-classic" % "1.1.2")
 
-  def list = List(scalaTest, clojureLib, clara, trelloilaro) ++ logger
+
+  object WebJar {
+    lazy val webjar = "org.webjars" %% "webjars-play" % "2.4.0-M2"
+    lazy val bootstrap = "org.webjars" % "bootstrap" % "3.3.2"
+    lazy val jQuery = "org.webjars" % "jquery" % "2.1.3"
+  }
+
+  def base = List(scalaTest) ++ logger
 }
 
-object StashekBuild extends Build {
+object IzabelaBuild extends Build {
 
   import BuildSettings._
-  val projectName = "stashek"
 
-  lazy val project = Project(
-    id = projectName,
+  lazy val root = Project(
+    id = "izabela",
     base = file("."),
-    settings = buildSettings ++ Seq(name := projectName) ++ clojure.settings
+    settings = buildSettings
+  ).aggregate(frontProject)
+
+
+  val frontName = "front"
+  val frontDependencies = {
+    import Dependencies._
+    lazy val webJars = WebJar.bootstrap :: WebJar.jQuery :: WebJar.webjar :: Nil
+    List() ++ webJars
+  }
+  lazy val frontProject = Project(
+    id = frontName,
+    base = file(frontName),
+    settings = buildSettings ++ clojure.settings ++ Seq(
+      name := frontName,
+      libraryDependencies ++= frontDependencies
+    )
+  ).enablePlugins(play.PlayScala).dependsOn(actorProject)
+
+
+  val actorName = "actor"
+  val actorDependencies = {
+    import Dependencies._
+    akka ++ List(ws)
+  }
+  lazy val actorProject = Project(
+    id = actorName,
+    base = file(actorName),
+    settings = buildSettings ++ Seq(
+      name := actorName,
+      libraryDependencies ++= actorDependencies
+    )
+  ).dependsOn(rulesProject)
+
+  val rulesName = "rules"
+    val rulesDependencies = {
+      import Dependencies._
+      List(clara, trelloilaro)
+  }
+  lazy val rulesProject = Project(
+    id = rulesName,
+    base = file(rulesName),
+    settings = buildSettings ++ Seq(
+      name := rulesName,
+      libraryDependencies ++= rulesDependencies
+    )
   )
+
+
+
+
+
 }

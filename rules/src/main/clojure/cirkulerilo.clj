@@ -1,4 +1,5 @@
 (ns cirkulerilo
+  (:import [org.tejo.iza.cirkulerilo.facts ChecklistFact ListFact CardFact BoardFact])
   (:refer-clojure :exclude [==])
   (:require [clara.rules.accumulators :as acc]
             [clara.rules :refer :all])
