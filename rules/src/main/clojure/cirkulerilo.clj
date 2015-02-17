@@ -1,16 +1,16 @@
 (ns cirkulerilo
-  (:import [org.tejo.iza.cirkulerilo.facts ChecklistFact ListFact CardFact BoardFact])
+  (:import [org.tejo.iza.rules.facts ChecklistFact ListFact CardFact BoardFact]
+           [org.tejo.iza.rules.facts.control DissenduAlvokon])
   (:refer-clojure :exclude [==])
   (:require [clara.rules.accumulators :as acc]
-            [clara.rules :refer :all])
-  (:import [org.tejo.stashek.cirkulerilo.facts ListFact BoardFact CardFact ChecklistFact]))
+            [clara.rules :refer :all]))
 
-(defrule call-for-contributions
+(defrule alvoko-rule
   "When there are conditions sends out the emails"
   [ListFact (= name "Aktuala")
             (= ?listId id)]
 
-  [CardFact (= name "Agordoj")
+  [CardFact (= name "Stirkarto")
             (= ?agrodojCardId id)]
 
   [ChecklistFact (= idCard ?agordojCardId)
@@ -19,8 +19,13 @@
 ;                 (= "Alvoko dissendita @stashek" (.name (.head (.tail checkItems))))]
                  (= "incomplete" (.state (.head (.tail checkItems))))]
   =>
-  (println ?agordojCardId)
+  (insert! (DissenduAlvokon.))
 )
+
+(defquery alvoko-query
+  "Query to find alvoko situation"
+  []
+  [?alvoko <- DissenduAlvokon])
 
 ;                 (not (.isCompleted ?secondCheckItem))
 ;                 (.isCompleted ?firstCheckItem)

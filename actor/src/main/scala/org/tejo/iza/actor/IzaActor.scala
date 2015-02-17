@@ -6,6 +6,8 @@ import clara.rules.{QueryResult, RuleLoader, WorkingMemory}
 import org.tejo.iza.actor.msg._
 import org.tejo.iza.actor.ws.TrelloWS
 import play.api.libs.ws.WSClient
+import scaldi.Injector
+import scaldi.akka.AkkaInjectable
 import scala.collection.JavaConversions._
 
 import scala.collection.mutable
@@ -14,9 +16,13 @@ import scala.concurrent.Future
 /** Provides HTTP client to trelloilaro
   * and creates akka interface to it.
   */
-class IzaActor(wsClient: WSClient) extends Actor{
+class IzaActor(implicit inj: Injector) extends Actor with AkkaInjectable {
 
   var workingMemory: WorkingMemory = _
+
+  val wsClient = inject [WSClient]
+  val handler = inject [CirkuleroHandler]
+
   val trello = new TrelloWS(wsClient)
   val executionQueue: mutable.Queue[Any] = mutable.Queue()
   
@@ -36,7 +42,9 @@ class IzaActor(wsClient: WSClient) extends Actor{
       // facts loading, we do not want to fire in this state
       context.become(loadingFacts)
       
-    case FreshWithRules(ruleNames) => RuleLoader.loadRules(ruleNames:_*)
+    case FreshWithRules(ruleNames) =>
+      workingMemory = RuleLoader.loadRules(ruleNames:_*)
+      workingMemory.insert(List(handler))
   }
 
   private case object FactsLoaded

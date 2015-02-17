@@ -8,7 +8,7 @@ import scala._
 
 object BuildSettings {
   val buildVersion = "0.1"
-  val buildScalaVersion = "2.11.4"
+  val buildScalaVersion = "2.11.5"
   val buildClojureVersion = "1.6.0"
 
   val buildSettings = Defaults.coreDefaultSettings ++ Seq(
@@ -35,7 +35,11 @@ object Dependencies {
 
   lazy val trelloilaro = "org.tejo" %% "trelloilaro" % "0.0.3"
 
-  lazy val scalaTest = "org.scalatest" %% "scalatest" % "2.2.1" % "test"
+  lazy val scalaTest = "org.scalatest" %% "scalatest" % "2.2.4" % "test"
+  lazy val scalaMock = "org.scalamock" %% "scalamock-scalatest-support" % "3.2" % "test"
+
+  lazy val scaldiPlay = "org.scaldi" %% "scaldi-play" % "0.5.3"
+  lazy val scaldiAkka = "org.scaldi" %% "scaldi-akka" % "0.5.3"
 
   lazy val clojureLib = "org.clojure" % "clojure" % "1.6.0"
 
@@ -66,7 +70,7 @@ object Dependencies {
     lazy val jQuery = "org.webjars" % "jquery" % "2.1.3"
   }
 
-  def base = List(scalaTest) ++ logger
+  def base = List(scalaTest, scalaMock, scaldiPlay, scaldiAkka) ++ logger
 }
 
 object IzabelaBuild extends Build {
@@ -89,7 +93,7 @@ object IzabelaBuild extends Build {
   lazy val frontProject = Project(
     id = frontName,
     base = file(frontName),
-    settings = buildSettings ++ clojure.settings ++ Seq(
+    settings = buildSettings ++ Seq(
       name := frontName,
       libraryDependencies ++= frontDependencies
     )
@@ -113,12 +117,12 @@ object IzabelaBuild extends Build {
   val rulesName = "rules"
     val rulesDependencies = {
       import Dependencies._
-      List(clara, trelloilaro)
+      List(clojureLib, clara, trelloilaro)
   }
   lazy val rulesProject = Project(
     id = rulesName,
     base = file(rulesName),
-    settings = buildSettings ++ Seq(
+    settings = buildSettings ++ clojure.settings ++ Seq(
       name := rulesName,
       libraryDependencies ++= rulesDependencies
     )
