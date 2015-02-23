@@ -42,6 +42,7 @@ object Dependencies {
   lazy val scaldiAkka = "org.scaldi" %% "scaldi-akka" % "0.5.3"
 
   lazy val clojureLib = "org.clojure" % "clojure" % "1.6.0"
+  lazy val clojureTime = "clj-time" % "clj-time" % "0.9.0"
 
   val akkaVersion = "2.3.5"
 
@@ -117,7 +118,7 @@ object IzabelaBuild extends Build {
   val rulesName = "rules"
     val rulesDependencies = {
       import Dependencies._
-      List(clojureLib, clara, trelloilaro)
+      List(clojureLib, clojureTime, clara, trelloilaro)
   }
   lazy val rulesProject = Project(
     id = rulesName,

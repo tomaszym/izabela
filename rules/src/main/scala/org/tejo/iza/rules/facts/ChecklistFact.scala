@@ -6,31 +6,50 @@ import pl.pej.trelloilaro.api.model.checklist.CheckItemJson
 import scala.beans.BeanInfo
 import scala.util.Try
 
-@BeanInfo
-case class ChecklistFact(
-                          checklistId: String,
-                          idCard: String,
-                          checkItems: List[CheckItem]
-                          )
+@BeanInfo case class ChecklistFact(
+                          id: String,
+                          idCard: String
+                          ) {
+//
+//  /** Returns an Option of a checkitem at
+//    * given index. Simplifies clojure rules.
+//    * @param idx Index from which checkItem is tried to be returned in an option.
+//    * @return
+//    */
+//  def checkedAt(idx: Int): Boolean =
+//    if(checkItems.isDefinedAt(idx))
+//      checkItems(idx).complete
+//    else false
+//
+//  def uncheckedAt(idx: Int) : Boolean =
+//    if (checkItems.isDefinedAt(idx))
+//      checkItems(idx).incomplete
+//    else false
+
+}
 
 object ChecklistFact {
-  def apply(json: ChecklistJson): ChecklistFact = {
-    Try(ChecklistFact(
-      checklistId = json.id,
-      idCard = json.idCard.get,
-      checkItems = json.checkItems.get.map(CheckItem(_))
-    )).get
+  def apply(listJson: ChecklistJson): (ChecklistFact, List[CheckItemFact]) = {
+    Try(
+      (
+        ChecklistFact(
+          id = listJson.id,
+          idCard = listJson.idCard.get),
+        listJson.checkItems.get.zipWithIndex.map { case (itemJson, idx) =>
+          CheckItemFact(idx, listJson.id, itemJson)
+        }
+      )
+    ).get
   }
 }
 
-@BeanInfo
-case class CheckItem(id: String, name: String, pos: Int, state: String)
+@BeanInfo case class CheckItemFact(idx: Int, id: String, idList: String, name: String, pos: Int, complete: Boolean)
 
-object CheckItem {
+object CheckItemFact {
 
-  def apply(json: CheckItemJson): CheckItem = {
+  def apply(idx: Int, idList: String, json: CheckItemJson): CheckItemFact = {
 
-    CheckItem(json.id, json.name.get, json.pos.get, json.state.get)
+    CheckItemFact(idx, json.id, idList = idList, json.name.get, json.pos.get, json.state.get == "complete")
 
   }
 }

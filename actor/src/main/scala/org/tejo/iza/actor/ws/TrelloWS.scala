@@ -46,7 +46,7 @@ class TrelloWS(client: WSClient) {
     }
   }
 
-  def checklistFacts(boardId: String): Future[List[ChecklistFact]] = {
+  def checklistFacts(boardId: String): Future[List[(ChecklistFact, List[CheckItemFact])]] = {
     val request = GetBoardChecklists(boardId)
 
     val checklistFactsFuture: Future[List[ChecklistJson]] = client.url(request.toString()).get().map { response =>

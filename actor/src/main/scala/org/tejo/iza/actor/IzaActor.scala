@@ -74,7 +74,7 @@ class IzaActor(implicit inj: Injector) extends Actor with AkkaInjectable {
       cards <- trello.cardFacts(boardId)
       checklists <- trello.checklistFacts(boardId)
     } yield {
-      board :: lists ++ cards ++ checklists
+      board :: lists ++ cards ++ checklists.map(_._1) ++ checklists.flatMap(_._2)
     }
   }
 

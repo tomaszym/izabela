@@ -28,16 +28,15 @@ object DissenduAlvokonData extends RuleTestData {
 
   override def facts: List[Any] = List(
     ListFact(listId, name = "Aktuala"),
-    CardFact(cardId, name = "Stirkarto"),
-    ChecklistFact(checklistId = checklistId, idCard = cardId, checkItems = List(
-      CheckItem(id = "", name = "", pos = 1, state = "complete"),
-      CheckItem(id = "", name = "", pos = 1, state = "incomplete"),
-      CheckItem(id = "", name = "", pos = 1, state = "incomplete"),
-      CheckItem(id = "", name = "", pos = 1, state = "incomplete"),
-      CheckItem(id = "", name = "", pos = 1, state = "incomplete"),
-      CheckItem(id = "", name = "", pos = 1, state = "incomplete"),
-      CheckItem(id = "", name = "", pos = 1, state = "incomplete")
-    ))
+    CardFact(cardId, name = "Stirkarto", due = Some("2000-02-01")),
+    ChecklistFact(id = checklistId, idCard = cardId),
+    CheckItemFact(idx = 0, id = "", idList = checklistId, name = "", pos = 1, complete = true),
+    CheckItemFact(idx = 1, id = "", idList = checklistId, name = "", pos = 1, complete = false),
+    CheckItemFact(idx = 2, id = "", idList = checklistId, name = "", pos = 1, complete = false),
+    CheckItemFact(idx = 3, id = "", idList = checklistId, name = "", pos = 1, complete = false),
+    CheckItemFact(idx = 4, id = "", idList = checklistId, name = "", pos = 1, complete = false),
+    CheckItemFact(idx = 5, id = "", idList = checklistId, name = "", pos = 1, complete = false),
+    CheckItemFact(idx = 6, id = "", idList = checklistId, name = "", pos = 1, complete = false)
   )
 
   val queryResultMap: Map[String, (String, Some[DissenduAlvokon])] = Map(
