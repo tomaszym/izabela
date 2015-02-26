@@ -4,7 +4,7 @@ import org.tejo.iza.rules.facts._
 import org.tejo.iza.rules.facts.control.DissenduAlvokon
 import org.tejo.iza.rules.test.RuleTestData
 
-object DissenduAlvokonData extends RuleTestData {
+object DissenduAlvokonTestData extends RuleTestData {
 
   val listId = "LISTID"
   val cardId = "CARDID"
@@ -28,7 +28,7 @@ object DissenduAlvokonData extends RuleTestData {
   )
 
   val queryResultMap: Map[String, (String, Some[DissenduAlvokon])] = Map(
-    "cirkulerilo/alvoko-query" -> ("?alvoko", Some(DissenduAlvokon(dueDate)))
+    "cirkulerilo/alvoku-query" -> ("?alvoku", Some(DissenduAlvokon(dueDate)))
   )
 
 }

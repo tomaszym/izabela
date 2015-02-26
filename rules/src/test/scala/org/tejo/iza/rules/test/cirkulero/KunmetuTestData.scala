@@ -1,18 +1,18 @@
 package org.tejo.iza.rules.test.cirkulero
 
 import org.joda.time.DateTime
-import org.joda.time.format.{ISODateTimeFormat, DateTimeFormatter}
+import org.joda.time.format.{DateTimeFormatter, ISODateTimeFormat}
 import org.tejo.iza.rules.facts._
-import org.tejo.iza.rules.facts.control.{Memorigo, DissenduAlvokon}
+import org.tejo.iza.rules.facts.control.{Kunmetu, Memorigu}
 import org.tejo.iza.rules.test.RuleTestData
 
-object MemorigoData extends RuleTestData {
+object KunmetuTestData extends RuleTestData {
 
   val listId = "LISTID"
   val cardId = "CARDID"
   val checklistId = "CHECKLISTID"
   val now = new DateTime()
-  val tomorrow = now.plusDays(2)
+  val tomorrow = now.plusHours(2)
   val fmt: DateTimeFormatter = ISODateTimeFormat.dateTime()
   val dueDate = tomorrow.toString(fmt)
 
@@ -24,16 +24,17 @@ object MemorigoData extends RuleTestData {
     ChecklistFact(id = checklistId, cardId = cardId),
     CheckItemFact(idx = 0, id = "", checklistId = checklistId, name = "", pos = 1, complete = true),
     CheckItemFact(idx = 1, id = "", checklistId = checklistId, name = "", pos = 1, complete = true),
-    CheckItemFact(idx = 2, id = "", checklistId = checklistId, name = "", pos = 1, complete = false),
-    CheckItemFact(idx = 3, id = "", checklistId = checklistId, name = "", pos = 1, complete = false),
-    CheckItemFact(idx = 4, id = "", checklistId = checklistId, name = "", pos = 1, complete = false),
+    CheckItemFact(idx = 2, id = "", checklistId = checklistId, name = "", pos = 1, complete = true),
+    CheckItemFact(idx = 3, id = "", checklistId = checklistId, name = "", pos = 1, complete = true),
+    CheckItemFact(idx = 4, id = "", checklistId = checklistId, name = "", pos = 1, complete = true),
     CheckItemFact(idx = 5, id = "", checklistId = checklistId, name = "", pos = 1, complete = false),
     CheckItemFact(idx = 6, id = "", checklistId = checklistId, name = "", pos = 1, complete = false)
   )
 
   val queryResultMap = Map(
-    "cirkulerilo/alvoko-query" -> ("?alvoko", None),
-    "cirkulerilo/memorigo-query" -> ("?memorigo", Some(Memorigo()))
+    "cirkulerilo/alvoku-query" -> ("?alvoku", None),
+    "cirkulerilo/memorigu-query" -> ("?memorigu", None),
+    "cirkulerilo/kunmetu-query" -> ("?kunmetu", Some(Kunmetu(listId)))
   )
 
 }

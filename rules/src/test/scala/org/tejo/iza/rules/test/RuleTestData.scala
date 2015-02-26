@@ -7,6 +7,7 @@ package org.tejo.iza.rules.test
   */
 abstract class RuleTestData {
 
+  // TODO make use of it - factor out stuff like query names from TestData classes
   def clojureNamespace: String
 
   def facts: List[Any]

@@ -1,6 +1,6 @@
 (ns cirkulerilo
   (:import [org.tejo.iza.rules.facts ChecklistFact ListFact CardFact BoardFact CheckItemFact]
-           [org.tejo.iza.rules.facts.control DissenduAlvokon Memorigo])
+           [org.tejo.iza.rules.facts.control DissenduAlvokon Memorigu Kunmetu])
   (:refer-clojure :exclude [==])
   (:require [clara.rules.accumulators :as acc]
             [clara.rules :refer :all]
@@ -8,7 +8,12 @@
             [clj-time.format :as format]))
 ;            ))
 (def trello-date (format/formatters :date-time))
-(defrule alvoko-rule
+(defn week-before-now? [date]
+  (t/before? (format/parse trello-date date) (t/plus (t/now) (t/weeks 1))))
+(defn day-before-now? [date]
+  (t/before? (format/parse trello-date date) (t/plus (t/now) (t/days 1))))
+
+(defrule alvoku-rule
   "When there's a list named 'Aktuala' with a card 'Stirkarto' on it with some due date and the first position on a checklist IS checked and the second IS NOT"
   [ListFact (= name "Aktuala")
    (= ?listId id)]
@@ -19,22 +24,20 @@
   [ChecklistFact (= cardId ?agordojCardId)
    (= ?checklistId id)]
   [CheckItemFact (= checklistId ?checklistId)
-   (= idx 0)
-   (true? complete )]
+   (= idx 0) (true? complete )]
   [CheckItemFact (= checklistId ?checklistId)
-   (= idx 1)
-   (false? complete)]
+   (= idx 1) (false? complete)]
 
   =>
   (insert! (DissenduAlvokon. ?due))
   )
 
-(defquery alvoko-query
+(defquery alvoku-query
   "Query to find alvoko situation"
   []
-  [?alvoko <- DissenduAlvokon])
+  [?alvoku <- DissenduAlvokon])
 
-(defrule memorigo-rule
+(defrule memorigu-rule
   "Same as alvoko-rule but:
    - the second item is complete,
    - it's less than a week to due date.
@@ -45,21 +48,46 @@
    (true? hasDue)
    (= ?due due)
    (= ?agrodojCardId id)]
-  [:test (t/before? (format/parse trello-date ?due) (t/plus (t/now) (t/months 1))) ]
   [ChecklistFact (= cardId ?agordojCardId)
    (= ?checklistId id)]
   [CheckItemFact (= checklistId ?checklistId)
-   (= idx 0)
-   (true? complete )]
+   (= idx 0) (true? complete )]
   [CheckItemFact (= checklistId ?checklistId)
-   (= idx 1)
-   (true? complete)]
-
+   (= idx 1) (true? complete)]
+  [:or
+   ; unua Memorigo: la tria taskero nekompletita, la limdato en malpli ol unu semajno
+   [:and [CheckItemFact (= checklistId ?checklistId) (= idx 2) (false? complete)] [:test (week-before-now? ?due)]]
+   ; dua Memorigo: la tria taskero kompletita (te. unua Memorigu), la limdato en malpli ol unu tago
+   [:and [CheckItemFact (= checklistId ?checklistId) (= idx 2) (true? complete)] [:test (day-before-now? ?due)]]]
+  [CheckItemFact (= checklistId ?checklistId) (= idx 3) (false? complete)] ; la kvara taskero nekompletita (te. la dua Memorigu)
   =>
-  (insert! (Memorigo.))
+  (insert! (Memorigu. ?due))
   )
 
-(defquery memorigo-query
-  "Query to find alvoko situation"
+(defquery memorigu-query
+  "Query to find Memorigu situation"
   []
-  [?memorigo <- Memorigo])
+  [?memorigu <- Memorigu])
+
+(defrule kunmetu-rule
+  " <priskribo> "
+  [ListFact (= name "Aktuala")
+   (= ?listId id)]
+  [CardFact (= name "Stirkarto")
+            (= ?agrodojCardId id)]
+  [ChecklistFact (= cardId ?agordojCardId)
+                 (= ?checklistId id)]
+  [CheckItemFact (= checklistId ?checklistId) (= idx 0) (true? complete)]
+  [CheckItemFact (= checklistId ?checklistId) (= idx 1) (true? complete)]
+  [CheckItemFact (= checklistId ?checklistId) (= idx 2) (true? complete)]
+  [CheckItemFact (= checklistId ?checklistId) (= idx 3) (true? complete)]
+  [CheckItemFact (= checklistId ?checklistId) (= idx 4) (true? complete)] ; konfirmo: kunmetu
+  [CheckItemFact (= checklistId ?checklistId) (= idx 5) (false? complete)] ; ankoraŭ nekunmetita
+  =>
+  (insert! (Kunmetu. ?listId))
+  )
+
+(defquery kunmetu-query
+  "Query to find Kunmetu situation"
+  []
+  [?kunmetu <- Kunmetu])
