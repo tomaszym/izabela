@@ -8,7 +8,7 @@ import scala.util.Try
 
 @BeanInfo case class ChecklistFact(
                           id: String,
-                          idCard: String
+                          cardId: String
                           ) {
 //
 //  /** Returns an Option of a checkitem at
@@ -34,7 +34,7 @@ object ChecklistFact {
       (
         ChecklistFact(
           id = listJson.id,
-          idCard = listJson.idCard.get),
+          cardId = listJson.idCard.get),
         listJson.checkItems.get.zipWithIndex.map { case (itemJson, idx) =>
           CheckItemFact(idx, listJson.id, itemJson)
         }
@@ -43,13 +43,13 @@ object ChecklistFact {
   }
 }
 
-@BeanInfo case class CheckItemFact(idx: Int, id: String, idList: String, name: String, pos: Int, complete: Boolean)
+@BeanInfo case class CheckItemFact(idx: Int, id: String, checklistId: String, name: String, pos: Int, complete: Boolean)
 
 object CheckItemFact {
 
   def apply(idx: Int, idList: String, json: CheckItemJson): CheckItemFact = {
 
-    CheckItemFact(idx, json.id, idList = idList, json.name.get, json.pos.get, json.state.get == "complete")
+    CheckItemFact(idx, json.id, checklistId = idList, json.name.get, json.pos.get, json.state.get == "complete")
 
   }
 }

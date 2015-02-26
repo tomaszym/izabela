@@ -6,7 +6,9 @@ import scala.beans.BeanInfo
 import scala.util.Try
 
 @BeanInfo
-case class CardFact(id: String, name: String, due: Option[String])
+case class CardFact(id: String, name: String, due: String) {
+  val hasDue: Boolean = !due.isEmpty
+}
 
 object CardFact {
 
@@ -14,7 +16,7 @@ object CardFact {
     Try(CardFact(
       id = json.id,
       name = json.name.get,
-      due = json.due.get
+      due = json.due.get.getOrElse("")
     )).get
   }
 }
