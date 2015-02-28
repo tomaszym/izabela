@@ -5,19 +5,25 @@ package org.tejo.iza.rules
   */
 sealed abstract class QueryIdentifier {
   def stringId: String
-  // TODO resultKeys?
+
+  def resultQueryKey: String
 }
 
 case object AlvokuQueryId extends QueryIdentifier {
   def stringId: String = "cirkulerilo/alvoku-query"
+
+  def resultQueryKey: String = "?alvoku"
 }
 case object MemoriguQueryId extends QueryIdentifier {
   def stringId: String = "cirkulerilo/memorigu-query"
+  def resultQueryKey: String = "?memorigu"
 }
 case object KunmetuQueryId extends QueryIdentifier {
   def stringId: String = "cirkulerilo/kunmetu-query"
+  def resultQueryKey: String = "?kunmetu"
 }
 
 case object KontribuintojQueryId extends QueryIdentifier {
   def stringId: String = "cirkulerilo/kontribuintoj-query"
+  def resultQueryKey: String = "?kontribuintoj"
 }

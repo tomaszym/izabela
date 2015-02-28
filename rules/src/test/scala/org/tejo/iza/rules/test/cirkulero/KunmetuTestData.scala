@@ -33,9 +33,9 @@ object KunmetuTestData extends RuleTestData {
   )
 
   val queryResultMap = Map(
-    AlvokuQueryId.stringId -> ("?alvoku", None),
-    MemoriguQueryId.stringId -> ("?memorigu", None),
-    KunmetuQueryId.stringId -> ("?kunmetu", Some(Kunmetu(listId)))
+    AlvokuQueryId.stringId -> (AlvokuQueryId.resultQueryKey, None),
+    MemoriguQueryId.stringId -> (MemoriguQueryId.resultQueryKey, None),
+    KunmetuQueryId.stringId -> (KunmetuQueryId.resultQueryKey, Some(Kunmetu(listId)))
   )
 
 }

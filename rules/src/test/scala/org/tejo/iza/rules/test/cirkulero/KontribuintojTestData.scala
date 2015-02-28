@@ -33,6 +33,6 @@ object KontribuintojTestData extends RuleTestData {
 
   val queryResultMap = Map( // result is a list which we need to cast and toList, so it doesn't fit in RuleTestData framework
 
-    KontribuintojQueryId.stringId -> ("?kontribuintoj", Some(kontribuintoj))
+    KontribuintojQueryId.stringId -> (KontribuintojQueryId.resultQueryKey, Some(kontribuintoj))
   )
 }

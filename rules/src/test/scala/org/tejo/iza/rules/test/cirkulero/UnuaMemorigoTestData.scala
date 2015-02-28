@@ -33,9 +33,9 @@ object UnuaMemorigoTestData extends RuleTestData {
   )
 
   val queryResultMap = Map(
-    AlvokuQueryId.stringId -> ("?alvoku", None),
-    MemoriguQueryId.stringId -> ("?memorigu", Some(Memorigu(dueDate))),
-    KunmetuQueryId.stringId -> ("?kunmetu", None)
+    AlvokuQueryId.stringId -> (AlvokuQueryId.resultQueryKey, None),
+    MemoriguQueryId.stringId -> (MemoriguQueryId, Some(Memorigu(dueDate))),
+    KunmetuQueryId.stringId -> (KunmetuQueryId.resultQueryKey, None)
   )
 
 }

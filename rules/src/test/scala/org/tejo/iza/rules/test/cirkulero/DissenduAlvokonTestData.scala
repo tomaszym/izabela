@@ -29,9 +29,9 @@ object DissenduAlvokonTestData extends RuleTestData {
   )
 
   val queryResultMap = Map(
-    AlvokuQueryId.stringId -> ("?alvoku", Some(DissenduAlvokon(dueDate))),
-    MemoriguQueryId.stringId -> ("?memorigu", None),
-    KunmetuQueryId.stringId -> ("?kunmetu", None)
+    AlvokuQueryId.stringId -> (AlvokuQueryId.resultQueryKey, Some(DissenduAlvokon(dueDate))),
+    MemoriguQueryId.stringId -> (MemoriguQueryId.resultQueryKey, None),
+    KunmetuQueryId.stringId -> (KunmetuQueryId.resultQueryKey, None)
   )
 
 }
