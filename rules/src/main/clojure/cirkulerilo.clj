@@ -1,6 +1,7 @@
 (ns cirkulerilo
   (:import [org.tejo.iza.rules.facts ChecklistFact ListFact CardFact BoardFact CheckItemFact]
-           [org.tejo.iza.rules.facts.control DissenduAlvokon Memorigu Kunmetu])
+           [org.tejo.iza.rules.facts.control DissenduAlvokon Memorigu Kunmetu]
+           [scala.collection.immutable Vector Vector$])
   (:refer-clojure :exclude [==])
   (:require [clara.rules.accumulators :as acc]
             [clara.rules :refer :all]
@@ -18,8 +19,8 @@
   [ListFact (= name "Aktuala")
    (= ?listId id)]
   [CardFact (= name "Stirkarto")
-   (true? hasDue)
-   (= ?due due)
+   (true? hasDue) (= ?due due)
+   (= listId ?listId)
    (= ?agrodojCardId id)]
   [ChecklistFact (= cardId ?agordojCardId)
    (= ?checklistId id)]
@@ -45,8 +46,8 @@
   [ListFact (= name "Aktuala")
    (= ?listId id)]
   [CardFact (= name "Stirkarto")
-   (true? hasDue)
-   (= ?due due)
+   (true? hasDue) (= ?due due)
+   (= listId ?listId)
    (= ?agrodojCardId id)]
   [ChecklistFact (= cardId ?agordojCardId)
    (= ?checklistId id)]
@@ -74,6 +75,7 @@
   [ListFact (= name "Aktuala")
    (= ?listId id)]
   [CardFact (= name "Stirkarto")
+            (= listId ?listId)
             (= ?agrodojCardId id)]
   [ChecklistFact (= cardId ?agordojCardId)
                  (= ?checklistId id)]
@@ -91,3 +93,20 @@
   "Query to find Kunmetu situation"
   []
   [?kunmetu <- Kunmetu])
+;(defn colon-colon [items value] (.$colon$plus$ items value))
+;(defn all-scala-list
+;  ""
+;  ([]
+;    (accumulate
+;      :initial-value (. Vector$ empty())
+;      :reduce-fn (fn [items value] (colon-colon items value))
+;      :combine-fn concat))
+;  )
+
+
+(defquery kontribuintoj-query
+  "Query to find kontribuintoj "
+  []
+  [ListFact (= name "Aktuala")
+            (= ?listId id)]
+  [?kontribuintoj <- (acc/all) from [CardFact (= listId ?listId) (not= name "Stirkarto")]])

@@ -4,7 +4,7 @@ import akka.actor.Actor
 import akka.actor.Actor.Receive
 import clara.rules.{QueryResult, RuleLoader, WorkingMemory}
 import org.tejo.iza.actor.msg._
-import org.tejo.iza.actor.ws.TrelloWS
+import org.tejo.iza.actor.ws.{FactList, TrelloWS}
 import play.api.libs.ws.WSClient
 import scaldi.Injector
 import scaldi.akka.AkkaInjectable
@@ -16,21 +16,20 @@ import scala.concurrent.Future
 /** Provides HTTP client to trelloilaro
   * and creates akka interface to it.
   */
-class IzaActor(implicit inj: Injector) extends Actor with AkkaInjectable {
+class IzaActor(implicit inj: Injector) extends Actor with AkkaInjectable with FactList {
 
   var workingMemory: WorkingMemory = _
 
   val wsClient = inject [WSClient]
-  val handler = inject [CirkuleroHandler]
 
-  val trello = new TrelloWS(wsClient)
+  implicit val trello = new TrelloWS(wsClient)
   val executionQueue: mutable.Queue[Any] = mutable.Queue()
   
   override def receive: Receive = {
     case FireRules => workingMemory.fireRules()
 
-    case Query(q) =>
-      sender() ! Response(workingMemory.query(q).toList)
+    case QueryMsg(q) =>
+      sender() ! ResponseMsg(workingMemory.query(q.stringId).toList)
 
     case LoadFactsForBoard(boardId) =>
 
@@ -44,7 +43,6 @@ class IzaActor(implicit inj: Injector) extends Actor with AkkaInjectable {
       
     case FreshWithRules(ruleNames) =>
       workingMemory = RuleLoader.loadRules(ruleNames:_*)
-      workingMemory.insert(List(handler))
   }
 
   private case object FactsLoaded
@@ -64,18 +62,6 @@ class IzaActor(implicit inj: Injector) extends Actor with AkkaInjectable {
         processQueue()
     }
   }
-  
-  // TODO move this function *somewhere*
-  def factListFuture(boardId: String): Future[List[_]] = {
 
-    for {
-      board <- trello.boardFact(boardId)
-      lists <- trello.listFacts(boardId)
-      cards <- trello.cardFacts(boardId)
-      checklists <- trello.checklistFacts(boardId)
-    } yield {
-      board :: lists ++ cards ++ checklists.map(_._1) ++ checklists.flatMap(_._2)
-    }
-  }
 
 }

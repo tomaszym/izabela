@@ -1,7 +1,8 @@
 package org.tejo.iza.rules.test.cirkulero
 
+import org.tejo.iza.rules.{KunmetuQueryId, MemoriguQueryId, AlvokuQueryId}
 import org.tejo.iza.rules.facts._
-import org.tejo.iza.rules.facts.control.DissenduAlvokon
+import org.tejo.iza.rules.facts.control.{Kunmetu, DissenduAlvokon}
 import org.tejo.iza.rules.test.RuleTestData
 
 object DissenduAlvokonTestData extends RuleTestData {
@@ -16,7 +17,7 @@ object DissenduAlvokonTestData extends RuleTestData {
 
   override def facts: List[Any] = List(
     ListFact(listId, name = "Aktuala"),
-    CardFact(cardId, name = "Stirkarto", due = dueDate),
+    CardFact(cardId, listId = listId, name = "Stirkarto", due = dueDate),
     ChecklistFact(id = checklistId, cardId = cardId),
     CheckItemFact(idx = 0, id = "", checklistId = checklistId, name = "", pos = 1, complete = true),
     CheckItemFact(idx = 1, id = "", checklistId = checklistId, name = "", pos = 1, complete = false),
@@ -27,8 +28,10 @@ object DissenduAlvokonTestData extends RuleTestData {
     CheckItemFact(idx = 6, id = "", checklistId = checklistId, name = "", pos = 1, complete = false)
   )
 
-  val queryResultMap: Map[String, (String, Some[DissenduAlvokon])] = Map(
-    "cirkulerilo/alvoku-query" -> ("?alvoku", Some(DissenduAlvokon(dueDate)))
+  val queryResultMap = Map(
+    AlvokuQueryId.stringId -> ("?alvoku", Some(DissenduAlvokon(dueDate))),
+    MemoriguQueryId.stringId -> ("?memorigu", None),
+    KunmetuQueryId.stringId -> ("?kunmetu", None)
   )
 
 }

@@ -7,13 +7,16 @@ import org.scalatest.Suite
   */
 trait RuleTestBase { this: Suite =>
 
-  def runTest(testData: RuleTestData): Unit = {
+  import scala.collection.convert.wrapAll._
 
+  def loadRulesAndFacts(testData: RuleTestData): WorkingMemory = {
     val emptyMemory: WorkingMemory = RuleLoader.loadRules(testData.clojureNamespace)
+    emptyMemory.insert(testData.facts).fireRules
+  }
 
-    import scala.collection.convert.wrapAll._
-    val memory: WorkingMemory = emptyMemory.insert(testData.facts).fireRules
 
+
+  private def assertResult(testData: RuleTestData, memory: WorkingMemory) = {
 
     testData.queryResultMap.map { case (query, (resultName, result)) =>
 
@@ -21,4 +24,32 @@ trait RuleTestBase { this: Suite =>
     }
 
   }
+
+  /** Returning clojure lists brings some boilerplate code,
+    * so we have another assert for it.
+    *
+    * @param testData
+    * @param memory
+    */
+  private def assertWithClojureListResult(testData: RuleTestData, memory: WorkingMemory) = {
+
+    testData.queryResultMap.map { case (query, (resultName, result)) =>
+
+      assert(memory.query(query).headOption.map(_.getResult(resultName).asInstanceOf[java.util.List[_]].toList) === result)
+    }
+  }
+
+
+
+  def runTest(testData: RuleTestData) = {
+    assertResult(testData, loadRulesAndFacts(testData))
+  }
+
+
+
+  def runTestListOutput(testData: RuleTestData) = {
+    assertWithClojureListResult(testData, loadRulesAndFacts(testData))
+  }
+
 }
+

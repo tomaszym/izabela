@@ -2,6 +2,7 @@ package org.tejo.iza.rules.test.cirkulero
 
 import org.joda.time.DateTime
 import org.joda.time.format.{DateTimeFormatter, ISODateTimeFormat}
+import org.tejo.iza.rules.{KunmetuQueryId, MemoriguQueryId, AlvokuQueryId}
 import org.tejo.iza.rules.facts._
 import org.tejo.iza.rules.facts.control.{Kunmetu, Memorigu}
 import org.tejo.iza.rules.test.RuleTestData
@@ -20,7 +21,7 @@ object KunmetuTestData extends RuleTestData {
 
   override def facts: List[Any] = List(
     ListFact(listId, name = "Aktuala"),
-    CardFact(cardId, name = "Stirkarto", due = dueDate),
+    CardFact(cardId, listId = listId, name = "Stirkarto", due = dueDate),
     ChecklistFact(id = checklistId, cardId = cardId),
     CheckItemFact(idx = 0, id = "", checklistId = checklistId, name = "", pos = 1, complete = true),
     CheckItemFact(idx = 1, id = "", checklistId = checklistId, name = "", pos = 1, complete = true),
@@ -32,9 +33,9 @@ object KunmetuTestData extends RuleTestData {
   )
 
   val queryResultMap = Map(
-    "cirkulerilo/alvoku-query" -> ("?alvoku", None),
-    "cirkulerilo/memorigu-query" -> ("?memorigu", None),
-    "cirkulerilo/kunmetu-query" -> ("?kunmetu", Some(Kunmetu(listId)))
+    AlvokuQueryId.stringId -> ("?alvoku", None),
+    MemoriguQueryId.stringId -> ("?memorigu", None),
+    KunmetuQueryId.stringId -> ("?kunmetu", Some(Kunmetu(listId)))
   )
 
 }
