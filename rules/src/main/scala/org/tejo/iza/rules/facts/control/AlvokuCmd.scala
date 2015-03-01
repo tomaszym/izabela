@@ -6,4 +6,4 @@ import scala.beans.BeanInfo
   * the situation. Other actors might then query for it
   * and take actions.
   */
-@BeanInfo case class DissenduAlvokon(due: String)
+@BeanInfo case class AlvokuCmd(due: String)

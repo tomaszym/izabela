@@ -9,7 +9,7 @@ class CirkuleroSuite extends FunSuite with RuleTestBase {
   test("Memorigo a week before")(runTest(UnuaMemorigoTestData))
   test("Memorigo a day before")(runTest(DuaMemorigoTestData))
   test("Kunmetu")(runTest(KunmetuTestData))
-  test("Kontribuintoj")(runTestListOutput(KontribuintojTestData))
+  test("Kontribuintoj")(runTest(KontribuintojTestData))
 
 
 }

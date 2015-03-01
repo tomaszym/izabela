@@ -1,29 +1,34 @@
 package org.tejo.iza.rules
 
-/** Objects representing string queries in .clj code.
-  * Just to avoid typos.
-  */
-sealed abstract class QueryIdentifier {
-  def stringId: String
+import clara.rules.QueryResult
+import java.lang.Iterable
 
-  def resultQueryKey: String
+import org.tejo.iza.rules.facts.CardFact
+import org.tejo.iza.rules.facts.control.{KunmetuCmd, MemoriguCmd, AlvokuCmd}
+
+import scala.language.higherKinds
+
+case object AlvokuQuery extends SingleResultQuery[AlvokuCmd] {
+  override def toString: String = "cirkulerilo/alvoku-query"
+
+  protected def resultQueryKey: String = "?alvoku"
+}
+case object MemoriguQuery extends SingleResultQuery[MemoriguCmd] {
+  override def toString: String = "cirkulerilo/memorigu-query"
+  protected def resultQueryKey: String = "?memorigu"
+}
+case object KunmetuQuery extends SingleResultQuery[KunmetuCmd] {
+  override def toString: String = "cirkulerilo/kunmetu-query"
+  protected def resultQueryKey: String = "?kunmetu"
 }
 
-case object AlvokuQueryId extends QueryIdentifier {
-  def stringId: String = "cirkulerilo/alvoku-query"
+case object KontribuintojQuery extends ClaraQuery[List[CardFact]] {
+  override def toString: String = "cirkulerilo/kontribuintoj-query"
+  private def resultQueryKey: String = "?kontribuintoj"
 
-  def resultQueryKey: String = "?alvoku"
-}
-case object MemoriguQueryId extends QueryIdentifier {
-  def stringId: String = "cirkulerilo/memorigu-query"
-  def resultQueryKey: String = "?memorigu"
-}
-case object KunmetuQueryId extends QueryIdentifier {
-  def stringId: String = "cirkulerilo/kunmetu-query"
-  def resultQueryKey: String = "?kunmetu"
-}
+  def extract(it: Iterable[QueryResult]): List[CardFact] = {
+    import scala.collection.convert.wrapAll._
 
-case object KontribuintojQueryId extends QueryIdentifier {
-  def stringId: String = "cirkulerilo/kontribuintoj-query"
-  def resultQueryKey: String = "?kontribuintoj"
+    it.toList.flatMap(_.getResult(resultQueryKey).asInstanceOf[java.util.List[CardFact]].toList)
+  }
 }

@@ -1,8 +1,8 @@
 package org.tejo.iza.actor.cirkulerilo.redaktilo
 
 import org.tejo.iza.rules.facts.CardFact
+import org.tejo.model.TEJO
 
-
-abstract class Redaktilo {
-  def redaktu(kontribuoj: List[CardFact]): String
+trait Redaktilo {
+  def redaktu(kontribuoj: List[CardFact], tejo: TEJO): String
 }

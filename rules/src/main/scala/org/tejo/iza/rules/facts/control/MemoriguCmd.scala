@@ -6,4 +6,4 @@ import scala.beans.BeanInfo
   * the situation. Actors might query for it and take actions
   * accordingly.
   */
-@BeanInfo case class Kunmetu(listId: String)
+@BeanInfo case class MemoriguCmd(due: String)

@@ -1,7 +1,6 @@
 (ns cirkulerilo
   (:import [org.tejo.iza.rules.facts ChecklistFact ListFact CardFact BoardFact CheckItemFact]
-           [org.tejo.iza.rules.facts.control DissenduAlvokon Memorigu Kunmetu]
-           [scala.collection.immutable Vector Vector$])
+           [org.tejo.iza.rules.facts.control AlvokuCmd MemoriguCmd KunmetuCmd])
   (:refer-clojure :exclude [==])
   (:require [clara.rules.accumulators :as acc]
             [clara.rules :refer :all]
@@ -30,13 +29,13 @@
    (= idx 1) (false? complete)]
 
   =>
-  (insert! (DissenduAlvokon. ?due))
+  (insert! (AlvokuCmd. ?due))
   )
 
 (defquery alvoku-query
   "Query to find alvoko situation"
   []
-  [?alvoku <- DissenduAlvokon])
+  [?alvoku <- AlvokuCmd])
 
 (defrule memorigu-rule
   "Same as alvoko-rule but:
@@ -62,13 +61,13 @@
    [:and [CheckItemFact (= checklistId ?checklistId) (= idx 2) (true? complete)] [:test (day-before-now? ?due)]]]
   [CheckItemFact (= checklistId ?checklistId) (= idx 3) (false? complete)] ; la kvara taskero nekompletita (te. la dua Memorigu)
   =>
-  (insert! (Memorigu. ?due))
+  (insert! (MemoriguCmd. ?due))
   )
 
 (defquery memorigu-query
   "Query to find Memorigu situation"
   []
-  [?memorigu <- Memorigu])
+  [?memorigu <- MemoriguCmd])
 
 (defrule kunmetu-rule
   " <priskribo> "
@@ -86,13 +85,13 @@
   [CheckItemFact (= checklistId ?checklistId) (= idx 4) (true? complete)] ; konfirmo: kunmetu
   [CheckItemFact (= checklistId ?checklistId) (= idx 5) (false? complete)] ; ankoraŭ nekunmetita
   =>
-  (insert! (Kunmetu. ?listId))
+  (insert! (KunmetuCmd. ?listId))
   )
 
 (defquery kunmetu-query
   "Query to find Kunmetu situation"
   []
-  [?kunmetu <- Kunmetu])
+  [?kunmetu <- KunmetuCmd])
 ;(defn colon-colon [items value] (.$colon$plus$ items value))
 ;(defn all-scala-list
 ;  ""

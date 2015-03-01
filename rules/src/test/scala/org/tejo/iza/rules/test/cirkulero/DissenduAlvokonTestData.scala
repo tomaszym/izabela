@@ -1,8 +1,8 @@
 package org.tejo.iza.rules.test.cirkulero
 
-import org.tejo.iza.rules.{KunmetuQueryId, MemoriguQueryId, AlvokuQueryId}
+import org.tejo.iza.rules._
 import org.tejo.iza.rules.facts._
-import org.tejo.iza.rules.facts.control.{Kunmetu, DissenduAlvokon}
+import org.tejo.iza.rules.facts.control.{KunmetuCmd, AlvokuCmd}
 import org.tejo.iza.rules.test.RuleTestData
 
 object DissenduAlvokonTestData extends RuleTestData {
@@ -13,7 +13,7 @@ object DissenduAlvokonTestData extends RuleTestData {
   val dueDate = "2015-02-26T01:08:44.490Z"
 
 
-  val clojureNamespace: String = "cirkulerilo"
+  val rulesNamespace: String = "cirkulerilo"
 
   override def facts: List[Any] = List(
     ListFact(listId, name = "Aktuala"),
@@ -28,10 +28,9 @@ object DissenduAlvokonTestData extends RuleTestData {
     CheckItemFact(idx = 6, id = "", checklistId = checklistId, name = "", pos = 1, complete = false)
   )
 
-  val queryResultMap = Map(
-    AlvokuQueryId.stringId -> (AlvokuQueryId.resultQueryKey, Some(DissenduAlvokon(dueDate))),
-    MemoriguQueryId.stringId -> (MemoriguQueryId.resultQueryKey, None),
-    KunmetuQueryId.stringId -> (KunmetuQueryId.resultQueryKey, None)
+  override def queryResultMap: Map[ClaraQuery[_], Any] = Map(
+    AlvokuQuery -> Some(AlvokuCmd(dueDate)),
+    MemoriguQuery -> None,
+    KunmetuQuery -> None
   )
-
 }

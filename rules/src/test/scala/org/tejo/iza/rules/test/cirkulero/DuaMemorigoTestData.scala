@@ -2,9 +2,9 @@ package org.tejo.iza.rules.test.cirkulero
 
 import org.joda.time.DateTime
 import org.joda.time.format.{DateTimeFormatter, ISODateTimeFormat}
-import org.tejo.iza.rules.{KunmetuQueryId, MemoriguQueryId, AlvokuQueryId}
+import org.tejo.iza.rules._
 import org.tejo.iza.rules.facts._
-import org.tejo.iza.rules.facts.control.Memorigu
+import org.tejo.iza.rules.facts.control.{AlvokuCmd, MemoriguCmd}
 import org.tejo.iza.rules.test.RuleTestData
 
 object DuaMemorigoTestData extends RuleTestData {
@@ -17,7 +17,7 @@ object DuaMemorigoTestData extends RuleTestData {
   val fmt: DateTimeFormatter = ISODateTimeFormat.dateTime()
   val dueDate = tomorrow.toString(fmt)
 
-  val clojureNamespace: String = "cirkulerilo"
+  val rulesNamespace: String = "cirkulerilo"
 
   override def facts: List[Any] = List(
     ListFact(listId, name = "Aktuala"),
@@ -32,10 +32,10 @@ object DuaMemorigoTestData extends RuleTestData {
     CheckItemFact(idx = 6, id = "", checklistId = checklistId, name = "", pos = 1, complete = false)
   )
 
-  val queryResultMap = Map(
-    AlvokuQueryId.stringId -> (AlvokuQueryId.resultQueryKey, None),
-    MemoriguQueryId.stringId -> (MemoriguQueryId.resultQueryKey, Some(Memorigu(dueDate))),
-    KunmetuQueryId.stringId -> (KunmetuQueryId.resultQueryKey, None)
+  override def queryResultMap: Map[ClaraQuery[_], Any] = Map(
+    AlvokuQuery -> None,
+    MemoriguQuery -> Some(MemoriguCmd(dueDate)),
+    KunmetuQuery -> None
   )
 
 }
