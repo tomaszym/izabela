@@ -17,8 +17,6 @@ object DuaMemorigoTestData extends RuleTestData {
   val fmt: DateTimeFormatter = ISODateTimeFormat.dateTime()
   val dueDate = tomorrow.toString(fmt)
 
-  val rulesNamespace: String = "cirkulerilo"
-
   override def facts: List[Any] = List(
     ListFact(listId, name = "Aktuala"),
     CardFact(cardId, listId = listId, name = "Stirkarto", due = dueDate),

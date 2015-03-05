@@ -7,23 +7,17 @@ import pl.pej.trelloilaro.api.requestBuilder._
 import play.api.libs.json.{JsError, JsSuccess}
 import play.api.libs.ws.WSClient
 
-import scala.concurrent.{Await, Future}
+import scala.concurrent.{ExecutionContext, Await, Future}
 
+trait TrelloService {
+  def boardFact(boardId: String): Future[BoardFact]
+  def checklistFacts(boardId: String): Future[List[(ChecklistFact, List[CheckItemFact])]]
+  def listFacts(boardId: String): Future[List[ListFact]]
+  def cardFacts(boardId: String): Future[List[CardFact]]
+  def actionFacts(boardId: String): Future[List[ActionFact]]
+}
 
-class TrelloWS(client: WSClient) {
-
-//    def facts: Future[TrelloFacts] =
-//      TrelloFacts(
-//        board = boardFact,
-//        lists = listFacts,
-//        cards = cardFacts,
-//        checklists = checklistFacts
-//      )
-//
-//    def factsBlocking: TrelloFacts = {
-//      import scala.concurrent.duration._
-//      Await.result(facts, 10 seconds)
-//    }
+class TrelloWS(client: WSClient)(implicit ec: ExecutionContext) extends TrelloService {
 
   def boardFact(boardId: String): Future[BoardFact] = {
     val request = GetBoard(boardId)

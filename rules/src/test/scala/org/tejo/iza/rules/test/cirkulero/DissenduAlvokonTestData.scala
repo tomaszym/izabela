@@ -12,9 +12,6 @@ object DissenduAlvokonTestData extends RuleTestData {
   val checklistId = "CHECKLISTID"
   val dueDate = "2015-02-26T01:08:44.490Z"
 
-
-  val rulesNamespace: String = "cirkulerilo"
-
   override def facts: List[Any] = List(
     ListFact(listId, name = "Aktuala"),
     CardFact(cardId, listId = listId, name = "Stirkarto", due = dueDate),

@@ -3,8 +3,9 @@ package org.tejo.iza.actor
 import akka.actor.Actor
 import akka.actor.Actor.Receive
 import clara.rules.{QueryResult, RuleLoader, WorkingMemory}
+import org.tejo.iza.actor.cirkulerilo.KunmetuActor
 import org.tejo.iza.actor.msg._
-import org.tejo.iza.actor.ws.{FactList, TrelloWS}
+import org.tejo.iza.actor.ws.{TrelloService, FactList, TrelloWS}
 import org.tejo.iza.rules.ClaraQuery
 import play.api.libs.ws.WSClient
 import scaldi.Injector
@@ -12,7 +13,7 @@ import scaldi.akka.AkkaInjectable
 import scala.collection.JavaConversions._
 
 import scala.collection.mutable
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 /** Provides HTTP client to trelloilaro
   * and creates akka interface to it.
@@ -21,19 +22,29 @@ class IzaActor(implicit inj: Injector) extends Actor with AkkaInjectable with Fa
 
   import IzaActor.Msg._
   var workingMemory: WorkingMemory = _
-  val wsClient = inject [WSClient]
 
-  implicit val trello = new TrelloWS(wsClient)
+  implicit val ec: ExecutionContext = context.dispatcher
+
+  implicit val trello = inject [TrelloService]
   val executionQueue: mutable.Queue[Any] = mutable.Queue()
+
+  val kunmetuActor = injectActorRef [KunmetuActor]
+
+  val rulesFiredObservers = kunmetuActor :: Nil
+
 
   /** Main Receive - no facts loading.
     */
   override def receive: Receive = {
 
-    case FireRules => workingMemory.fireRules()
+    case FireRules =>
+      workingMemory.fireRules()
+      rulesFiredObservers.map { actor =>
+        actor ! RulesFired
+      }
 
 
-    case query: ClaraQuery =>
+    case query: ClaraQuery[_] =>
       sender() ! ClaraQueryResult(query(workingMemory))// TODO messages considering query type
 
 
@@ -88,7 +99,7 @@ object IzaActor {
       *
       * @param ruleNames names of rules to be set after reset
       */
-    case class ResetWorkingMemory(ruleNames: Array[String])
+    case class ResetWorkingMemory(ruleNames: List[String])
 
     case class ClaraQueryResult(res: Any)
 

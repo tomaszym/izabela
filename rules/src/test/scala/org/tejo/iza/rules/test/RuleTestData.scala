@@ -9,9 +9,6 @@ import org.tejo.iza.rules.ClaraQuery
   */
 abstract class RuleTestData {
 
-  // TODO make use of it - factor out stuff like query names from TestData classes
-  def rulesNamespace: String
-
   def facts: List[Any]
 
   def queryResultMap: Map[ClaraQuery[_], Any]

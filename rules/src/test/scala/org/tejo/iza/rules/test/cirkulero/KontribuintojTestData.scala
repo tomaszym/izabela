@@ -17,8 +17,6 @@ object KontribuintojTestData extends RuleTestData {
   val fmt: DateTimeFormatter = ISODateTimeFormat.dateTime()
   val dueDate = tomorrow.toString(fmt)
 
-  val rulesNamespace: String = "cirkulerilo"
-
   val kontribuintoj = List(
     CardFact("", listId, "asd@tejo.org",""),
     CardFact("", listId, "qwe@tejo.org",""),
