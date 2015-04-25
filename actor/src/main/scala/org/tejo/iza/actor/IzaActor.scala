@@ -3,6 +3,8 @@ package org.tejo.iza.actor
 import akka.actor.{Actor, ActorLogging, ActorRef}
 import akka.event.LoggingReceive
 import clara.rules.{RuleLoader, WorkingMemory}
+import org.tejo.iza.actor.cirkulerilo.DissenduActor.Msg.Cirkulero
+import org.tejo.iza.actor.cirkulerilo.DissenduActorTag
 import org.tejo.iza.actor.msg._
 import org.tejo.iza.actor.ws.{FactList, TrelloService}
 import org.tejo.iza.rules.ClaraQuery
@@ -10,11 +12,14 @@ import org.tejo.iza.rules.ClaraQuery
 import scala.collection.JavaConversions._
 import scala.collection.mutable
 import scala.concurrent.ExecutionContext
+import com.softwaremill.macwire._
+
+import scala.util.{Failure, Try, Success}
 
 /** Provides HTTP client to trelloilaro
   * and creates akka interface to it.
   */
-class IzaActor(val trello: TrelloService, rulesFiredObserversOnStart: List[ActorRef]) extends Actor with FactList with ActorLogging {
+class IzaActor(val trello: TrelloService, dissenduActor: ActorRef @@ DissenduActorTag, rulesFiredObserversOnStart: List[ActorRef]) extends Actor with FactList with ActorLogging {
 
   import org.tejo.iza.actor.IzaActor.Msg._
   var workingMemory: WorkingMemory = _
@@ -38,10 +43,13 @@ class IzaActor(val trello: TrelloService, rulesFiredObserversOnStart: List[Actor
 
 
     case query: ClaraQuery[_] =>
-      log.debug(s"ClaraQuery on working memory: $workingMemory")
-      val res = ClaraQueryResult(query(workingMemory))
-      log.debug(s"ClaraQuery results: $res")
-      sender() ! res
+      val s = sender
+      Try(ClaraQueryResult(query(workingMemory))) match {
+        case Success(res) =>
+          log.debug(s"ClaraQuery results: $res")
+          s ! res
+        case Failure(ex) => log.error(ex,"ClaraQuery failed")
+      }
 
 
     case LoadFacts(boardId) =>
@@ -60,6 +68,11 @@ class IzaActor(val trello: TrelloService, rulesFiredObserversOnStart: List[Actor
     case ResetWorkingMemory(ruleNames) =>
       workingMemory = RuleLoader.loadRules(ruleNames:_*)
       log.debug(s"ResetWorkingMemory on working memory: $workingMemory")
+
+    case m@Cirkulero(text) => {
+      log.debug("Iza havas la cirkuleron: " + text)
+      dissenduActor ! m
+    }
   }
 
   private case object FactsLoaded

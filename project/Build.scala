@@ -16,7 +16,7 @@ object BuildSettings {
     scalaVersion := buildScalaVersion,
     libraryDependencies ++= Dependencies.base,
     resolvers ++= Resolvers.list,
-    testOptions in Test += Tests.Argument("-oDF")
+    testOptions in Test += Tests.Argument("-oD")
   )
 //  val clojureSettings = Seq(
 //    clojureVersion := "1.5.1"

@@ -18,10 +18,10 @@ trait IzaActorModule {
 
   val redaktilo: Redaktilo = wire[DummyRedaktilo]
 
-  lazy val kunmetuActor: ActorRef = actorSystem.actorOf(Props(wire[KunmetuActor])).taggedWith[KunmetuActorTag]
-  lazy val dissenduActor: ActorRef = actorSystem.actorOf(Props(wire[DissenduActor])).taggedWith[DissenduActorTag]
+  lazy val kunmetuActor: ActorRef = actorSystem.actorOf(Props(wire[KunmetuActor]),"kunmetu").taggedWith[KunmetuActorTag]
+  lazy val dissenduActor: ActorRef = actorSystem.actorOf(Props(wire[DissenduActor]),"dissendu").taggedWith[DissenduActorTag]
 
-  lazy val izaActor: ActorRef = actorSystem.actorOf(Props(classOf[IzaActor], trelloService, kunmetuActor :: Nil)).taggedWith[IzaActorTag]
+  lazy val izaActor: ActorRef = actorSystem.actorOf(Props(classOf[IzaActor], trelloService, dissenduActor, kunmetuActor :: Nil),"iza").taggedWith[IzaActorTag]
 
   val tejoModel = TEJO(Nil, Nil, Nil)
 }

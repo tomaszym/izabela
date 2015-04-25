@@ -1,6 +1,6 @@
 package org.tejo.iza.tests.it
 
-import akka.actor.ActorSystem
+import akka.actor.{ActorRef, ActorSystem}
 import akka.testkit.{ImplicitSender, TestKit, TestProbe}
 import org.scalamock.scalatest.MockFactory
 import org.scalatest._
@@ -22,6 +22,8 @@ class IzaSuite (_system: ActorSystem) extends TestKit(_system) with ImplicitSend
 
   val trelloMock = mock[TrelloService]
 
+  lazy val dissenduProbe = TestProbe()
+  
   class TestModule extends IzaActorModule {
     override def actorSystem: ActorSystem = _system
 
@@ -30,6 +32,7 @@ class IzaSuite (_system: ActorSystem) extends TestKit(_system) with ImplicitSend
     override val redaktilo: Redaktilo = new Redaktilo {
       override def redaktu(kontribuoj: List[CardFact], tejo: TEJO): String = cirkuleroText
     }
+    override lazy val dissenduActor: ActorRef = dissenduProbe.ref
   }
 
   test("integation test") {
@@ -40,10 +43,7 @@ class IzaSuite (_system: ActorSystem) extends TestKit(_system) with ImplicitSend
     (trelloMock.checklistFacts _).expects(boardId).returning(Future.successful{checklistFacts})
     (trelloMock.listFacts _).expects(boardId).returning(Future.successful{List[ListFact](listFact)})
 
-    lazy val probe = TestProbe()
-
     val m = new TestModule
-
     val iza = m.izaActor
 
     import org.tejo.iza.actor.IzaActor.Msg._
@@ -54,7 +54,7 @@ class IzaSuite (_system: ActorSystem) extends TestKit(_system) with ImplicitSend
 
     iza ! FireRules
 
-    probe.expectMsg(10 seconds, Cirkulero(cirkuleroText))
+    dissenduProbe.expectMsg(20 seconds, Cirkulero(cirkuleroText))
   }
 
   override def afterAll() {

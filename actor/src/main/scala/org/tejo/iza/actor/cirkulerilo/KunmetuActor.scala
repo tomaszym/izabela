@@ -2,9 +2,12 @@ package org.tejo.iza.actor.cirkulerilo
 
 import akka.actor.{Actor, ActorLogging}
 import org.tejo.iza.actor.ClaraQueryHandler
+import org.tejo.iza.actor.IzaActor.Msg.ClaraQueryResult
 import org.tejo.iza.actor.cirkulerilo.DissenduActor.Msg.Cirkulero
 import org.tejo.iza.actor.cirkulerilo.redaktilo.Redaktilo
 import org.tejo.iza.actor.msg.RulesFired
+import org.tejo.iza.rules.facts.control.KunmetuCmd
+import org.tejo.iza.rules.facts.{CardFact, ListFact}
 import org.tejo.iza.rules.{KontribuintojQuery, KunmetuQuery}
 import org.tejo.model.TEJO
 
@@ -19,15 +22,21 @@ class KunmetuActor(
   override def receive: Receive = {
 
     case RulesFired =>
-      log.debug("Rules Fired.")
-      val iza = sender()
-      askQuery(KunmetuQuery, iza).flatMap {
-        case Some(_) => askQuery(KontribuintojQuery, iza).map { kontribuojFacts =>
-          val result = redaktilo.redaktu(kontribuojFacts, tejo)
-          iza ! Cirkulero(result)
-        }
+      sender() ! KunmetuQuery
 
-        case None => Future { log.debug("ne estas komando por kunmeti cirkuleron") }
+    case ClaraQueryResult(None) => log.debug("Nenio interesa.")
+
+
+
+    case ClaraQueryResult(res) =>
+
+      val iza = sender()
+      res match {
+        case Some(KunmetuCmd(id)) =>
+          iza ! KontribuintojQuery
+
+        case kontribuoj: List[CardFact] =>
+          iza ! Cirkulero(redaktilo.redaktu(kontribuoj, tejo))
       }
   }
 
