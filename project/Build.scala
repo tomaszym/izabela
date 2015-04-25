@@ -38,8 +38,9 @@ object Dependencies {
   lazy val scalaTest = "org.scalatest" %% "scalatest" % "2.2.4" % "test"
   lazy val scalaMock = "org.scalamock" %% "scalamock-scalatest-support" % "3.2" % "test"
 
-  lazy val scaldiPlay = "org.scaldi" %% "scaldi-play" % "0.5.3"
-  lazy val scaldiAkka = "org.scaldi" %% "scaldi-akka" % "0.5.3"
+  lazy val macwire = Seq(
+    "com.softwaremill.macwire" %% "macros" % "1.0.1",
+    "com.softwaremill.macwire" %% "runtime" % "1.0.1")
 
   lazy val clojureLib = "org.clojure" % "clojure" % "1.7.0-beta1"
   lazy val clojureTime = "clj-time" % "clj-time" % "0.9.0"
@@ -73,7 +74,7 @@ object Dependencies {
     lazy val jQuery = "org.webjars" % "jquery" % "2.1.3"
   }
 
-  def base = List(scalaTest, scalaMock, scaldiPlay, scaldiAkka) ++ logger
+  def base = List(scalaTest, scalaMock) ++ logger ++ macwire
 }
 
 object IzabelaBuild extends Build {

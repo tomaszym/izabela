@@ -6,7 +6,4 @@ import scala.beans.BeanInfo
   * the situation. Actors might query for it and take actions
   * accordingly.
   */
-@BeanInfo case class KunmetuCmd(listId: String) {
-
-  println("Tworzymy se nowe kunmetu cmd")
-}
+@BeanInfo case class KunmetuCmd(listId: String)

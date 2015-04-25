@@ -7,7 +7,9 @@ import scala.concurrent.{ExecutionContext, Future}
   */
 trait FactList {
 
-  def factListFuture(boardId: String)(implicit trello: TrelloService, executionContext: ExecutionContext): Future[List[_]] = {
+  def trello: TrelloService
+
+  def factListFuture(boardId: String)(implicit executionContext: ExecutionContext): Future[List[_]] = {
 
     for {
       board <- trello.boardFact(boardId)

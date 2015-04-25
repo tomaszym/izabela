@@ -1,14 +1,11 @@
 package org.tejo.iza.actor
 
-import akka.actor.{ActorLogging, Actor}
+import akka.actor.{Actor, ActorLogging, ActorRef}
 import akka.event.LoggingReceive
 import clara.rules.{RuleLoader, WorkingMemory}
-import org.tejo.iza.actor.cirkulerilo.KunmetuActor
 import org.tejo.iza.actor.msg._
 import org.tejo.iza.actor.ws.{FactList, TrelloService}
 import org.tejo.iza.rules.ClaraQuery
-import scaldi.Injector
-import scaldi.akka.AkkaInjectable
 
 import scala.collection.JavaConversions._
 import scala.collection.mutable
@@ -17,20 +14,16 @@ import scala.concurrent.ExecutionContext
 /** Provides HTTP client to trelloilaro
   * and creates akka interface to it.
   */
-class IzaActor(implicit inj: Injector) extends Actor with AkkaInjectable with FactList with ActorLogging {
+class IzaActor(val trello: TrelloService, rulesFiredObserversOnStart: List[ActorRef]) extends Actor with FactList with ActorLogging {
 
   import org.tejo.iza.actor.IzaActor.Msg._
   var workingMemory: WorkingMemory = _
 
   implicit val ec: ExecutionContext = context.dispatcher
 
-  implicit val trello = inject [TrelloService]
   val executionQueue: mutable.Queue[Any] = mutable.Queue()
 
-  val kunmetuActor = injectActorRef [KunmetuActor]
-
-  val rulesFiredObservers = kunmetuActor :: Nil
-
+  var rulesFiredObservers: List[ActorRef] = rulesFiredObserversOnStart
 
   /** Main Receive - no facts loading.
     */
@@ -39,7 +32,7 @@ class IzaActor(implicit inj: Injector) extends Actor with AkkaInjectable with Fa
     case FireRules =>
       log.debug(s"FireRules on working memory: $workingMemory")
       workingMemory = workingMemory.fireRules()
-      rulesFiredObservers.map { actor =>
+      rulesFiredObservers.foreach{ actor =>
         actor ! RulesFired
       }
 
@@ -95,6 +88,8 @@ class IzaActor(implicit inj: Injector) extends Actor with AkkaInjectable with Fa
 
 
 }
+
+trait IzaActorTag
 
 object IzaActor {
 

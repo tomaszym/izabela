@@ -6,3 +6,7 @@ import org.tejo.model.TEJO
 trait Redaktilo {
   def redaktu(kontribuoj: List[CardFact], tejo: TEJO): String
 }
+
+class DummyRedaktilo extends Redaktilo {
+  override def redaktu(kontribuoj: List[CardFact], tejo: TEJO): String = "Dummy"
+}
