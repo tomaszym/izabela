@@ -1,7 +1,7 @@
 package org.tejo.iza.tests.it
 
-import akka.actor.ActorSystem
-import akka.testkit.{TestProbe, TestKit, ImplicitSender}
+import akka.actor.{ActorRef, ActorSystem}
+import akka.testkit.{TestActorRef, TestProbe, TestKit, ImplicitSender}
 import org.scalamock.scalatest.MockFactory
 import org.scalatest._
 import org.tejo.iza.actor.IzaActor
@@ -9,6 +9,7 @@ import org.tejo.iza.actor.cirkulerilo.DissenduActor
 import org.tejo.iza.actor.cirkulerilo.DissenduActor.Msg.Cirkulero
 import org.tejo.iza.actor.cirkulerilo.redaktilo.Redaktilo
 import org.tejo.iza.actor.di.Modules.IzaActorModule
+import org.tejo.iza.actor.msg.RulesFired
 import org.tejo.iza.actor.ws.{TrelloService, TrelloWS}
 import org.tejo.iza.rules.ClojureNamespace
 import org.tejo.iza.rules.facts._
@@ -28,7 +29,7 @@ class IzaSuite (_system: ActorSystem) extends TestKit(_system) with ImplicitSend
 
     val trelloMock = mock[TrelloService]
 
-    (trelloMock.actionFacts _).expects(boardId).returning(Future{List[ActionFact]()})
+//    (trelloMock.actionFacts _).expects(boardId).returning(Future{List[ActionFact]()})
     (trelloMock.boardFact _).expects(boardId).returning(Future{BoardFact(boardId)})
     (trelloMock.cardFacts _).expects(boardId).returning(Future{cardFacts})
     (trelloMock.checklistFacts _).expects(boardId).returning(Future{checklistFacts})
@@ -42,8 +43,6 @@ class IzaSuite (_system: ActorSystem) extends TestKit(_system) with ImplicitSend
 
 //      val dissenduActor =
 
-      bind [DissenduActor] to new DissenduActor
-
       bind [Redaktilo] to new Redaktilo {
         override def redaktu(kontribuoj: List[CardFact], tejo: TEJO): String = cirkuleroText
       }
@@ -52,11 +51,15 @@ class IzaSuite (_system: ActorSystem) extends TestKit(_system) with ImplicitSend
 
     implicit lazy val module = testModule :: mainModule
 
-    probe.watch(injectActorRef [DissenduActor])
 
     implicit lazy val ec: ExecutionContext = inject [ExecutionContext]
 
-    val iza = injectActorRef [IzaActor]
+    val iza: TestActorRef[IzaActor] = TestActorRef( new IzaActor )
+
+    val kunmetuActorRef = iza.underlyingActor.kunmetuActor
+
+
+    probe.watch(kunmetuActorRef)
 
     import IzaActor.Msg._
 
@@ -64,9 +67,17 @@ class IzaSuite (_system: ActorSystem) extends TestKit(_system) with ImplicitSend
 
     iza ! LoadFacts(boardId)
 
-    iza ! FireRules
 
-    probe.expectMsg(5 seconds, Cirkulero(cirkuleroText))
+    val cancellable =
+      system.scheduler.schedule(2 seconds , 5 seconds, iza, FireRules)
+
+    probe.expectMsg(10 seconds, RulesFired)
+
+//    iza ! FireRules
+
+
+
+//    probe.expectMsg(15 seconds, Cirkulero(cirkuleroText))
 
   }
 
@@ -85,18 +96,18 @@ trait TestData {
 
   val listId = "<listId>"
   val checklistId = "<checklistId>"
-  val cardId = "<cardId>"
+  val stirkartoId = "<cardId>"
   
-  val listFact = ListFact(listId, "Aktuala")
+  val listFact = ListFact(listId, name = "Aktuala")
 
   val cardFacts: List[CardFact] = List(
-    CardFact("0", listId, name = "Stirkarto"),
+    CardFact(stirkartoId, listId, name = "Stirkarto"),
     CardFact("1", listId, "tomasz@tejo.org", desc = "Mi faris malmulte."),
     CardFact("2", listId, "lukasz@tejo.org", desc = "Mi faris multe.")
   )
 
   val checklistFacts: List[(ChecklistFact, List[CheckItemFact])] = List((
-    ChecklistFact(id = checklistId, cardId = cardId),
+    ChecklistFact(id = checklistId, cardId = stirkartoId),
     List(
       CheckItemFact(idx = 0, id = "", checklistId = checklistId, name = "", pos = 1, complete = true),
       CheckItemFact(idx = 1, id = "", checklistId = checklistId, name = "", pos = 1, complete = true),

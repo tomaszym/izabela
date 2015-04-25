@@ -16,7 +16,7 @@ object BuildSettings {
     scalaVersion := buildScalaVersion,
     libraryDependencies ++= Dependencies.base,
     resolvers ++= Resolvers.list,
-    testOptions in Test += Tests.Argument("-oD")
+    testOptions in Test += Tests.Argument("-oDF")
   )
 //  val clojureSettings = Seq(
 //    clojureVersion := "1.5.1"
@@ -41,7 +41,7 @@ object Dependencies {
   lazy val scaldiPlay = "org.scaldi" %% "scaldi-play" % "0.5.3"
   lazy val scaldiAkka = "org.scaldi" %% "scaldi-akka" % "0.5.3"
 
-  lazy val clojureLib = "org.clojure" % "clojure" % "1.6.0"
+  lazy val clojureLib = "org.clojure" % "clojure" % "1.7.0-beta1"
   lazy val clojureTime = "clj-time" % "clj-time" % "0.9.0"
 
   lazy val scalate = "org.scalatra.scalate" %% "scalate-core" % "1.7.0"
@@ -58,14 +58,14 @@ object Dependencies {
 
 //  lazy val clojureInClojure = "org.clojure" % "clojure" % "1.5.1" % clojure.Config.name
 
-  lazy val clara = "org.toomuchcode" % "clara-rules" % "0.8.3"
+  lazy val clara = "org.toomuchcode" % "clara-rules" % "0.8.6"
 
   lazy val ficus = "net.ceedubs" %% "ficus" % "1.1.1"
 
   lazy val logger = Seq(
-    "org.clapper" %% "grizzled-slf4j" % "1.0.2",
-    "ch.qos.logback" % "logback-classic" % "1.1.2")
-
+//    "org.clapper" %% "grizzled-slf4j" % "1.0.2",
+//    "ch.qos.logback" % "logback-classic" % "1.1.2"
+  )
 
   object WebJar {
     lazy val webjar = "org.webjars" %% "webjars-play" % "2.4.0-M2"

@@ -2,7 +2,7 @@ package org.tejo.iza.actor.di
 
 import akka.actor.ActorSystem
 import org.tejo.iza.actor.IzaActor
-import org.tejo.iza.actor.cirkulerilo.KunmetuActor
+import org.tejo.iza.actor.cirkulerilo.{DissenduActor, KunmetuActor}
 import org.tejo.iza.actor.ws.TrelloService
 import org.tejo.model.TEJO
 import scaldi.Module
@@ -24,6 +24,8 @@ object Modules {
 
 
    binding toProvider new KunmetuActor
+
+   binding toProvider new DissenduActor
 
    bind [TEJO] to TEJO(Nil, Nil, Nil)
 

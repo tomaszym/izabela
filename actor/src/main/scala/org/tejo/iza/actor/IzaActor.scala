@@ -1,26 +1,25 @@
 package org.tejo.iza.actor
 
-import akka.actor.Actor
-import akka.actor.Actor.Receive
-import clara.rules.{QueryResult, RuleLoader, WorkingMemory}
+import akka.actor.{ActorLogging, Actor}
+import akka.event.LoggingReceive
+import clara.rules.{RuleLoader, WorkingMemory}
 import org.tejo.iza.actor.cirkulerilo.KunmetuActor
 import org.tejo.iza.actor.msg._
-import org.tejo.iza.actor.ws.{TrelloService, FactList, TrelloWS}
+import org.tejo.iza.actor.ws.{FactList, TrelloService}
 import org.tejo.iza.rules.ClaraQuery
-import play.api.libs.ws.WSClient
 import scaldi.Injector
 import scaldi.akka.AkkaInjectable
-import scala.collection.JavaConversions._
 
+import scala.collection.JavaConversions._
 import scala.collection.mutable
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 /** Provides HTTP client to trelloilaro
   * and creates akka interface to it.
   */
-class IzaActor(implicit inj: Injector) extends Actor with AkkaInjectable with FactList {
+class IzaActor(implicit inj: Injector) extends Actor with AkkaInjectable with FactList with ActorLogging {
 
-  import IzaActor.Msg._
+  import org.tejo.iza.actor.IzaActor.Msg._
   var workingMemory: WorkingMemory = _
 
   implicit val ec: ExecutionContext = context.dispatcher
@@ -35,51 +34,61 @@ class IzaActor(implicit inj: Injector) extends Actor with AkkaInjectable with Fa
 
   /** Main Receive - no facts loading.
     */
-  override def receive: Receive = {
+  override def receive: Receive =  LoggingReceive {
 
     case FireRules =>
-      workingMemory.fireRules()
+      log.debug(s"FireRules on working memory: $workingMemory")
+      workingMemory = workingMemory.fireRules()
       rulesFiredObservers.map { actor =>
         actor ! RulesFired
       }
 
 
     case query: ClaraQuery[_] =>
-      sender() ! ClaraQueryResult(query(workingMemory))// TODO messages considering query type
+      log.debug(s"ClaraQuery on working memory: $workingMemory")
+      val res = ClaraQueryResult(query(workingMemory))
+      log.debug(s"ClaraQuery results: $res")
+      sender() ! res
 
 
     case LoadFacts(boardId) =>
 
       val factsFuture = factListFuture(boardId)
       factsFuture.map { facts =>
-        workingMemory.insert(facts)
+        log.debug(s"Inserting into Iza($workingMemory): $facts")
+        workingMemory = workingMemory.insert(seqAsJavaList(facts))
         self ! FactsLoaded
       }
       // facts loading, we do not want to fire in this state
+      log.debug("Iza goes to loadingFacts state")
       context.become(loadingFacts)
 
 
     case ResetWorkingMemory(ruleNames) =>
       workingMemory = RuleLoader.loadRules(ruleNames:_*)
+      log.debug(s"ResetWorkingMemory on working memory: $workingMemory")
   }
 
   private case object FactsLoaded
-  
+
   /** Facts loading state
     */
-  def loadingFacts: Receive = {
+  def loadingFacts: Receive = LoggingReceive {
     case FactsLoaded =>
       processQueue()
+      log.debug("Iza goes back to previous state")
       context.unbecome()
     case x: Any => executionQueue.enqueue(x)
   }
 
   def processQueue(): Unit = {
-    executionQueue.dequeue() match {
+    if(executionQueue.nonEmpty) executionQueue.dequeue() match {
       case l@LoadFacts(id) => receive(l)
 
       case anythingElse: Any =>
+        log.debug(s"ProcessingQueue: $anythingElse")
         receive(anythingElse)
+//        this.wait(500)
         processQueue()
     }
   }

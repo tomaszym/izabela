@@ -5,6 +5,6 @@ resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/release
 addSbtPlugin("com.typesafe.sbt" % "sbt-git" % "0.6.2")
 
 // from local repository
-addSbtPlugin("com.unhandledexpression" % "sbt-clojure" % "0.1.1")
+addSbtPlugin("com.unhandledexpression" % "sbt-clojure" % "0.1.2")
 
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.4.0-M2")

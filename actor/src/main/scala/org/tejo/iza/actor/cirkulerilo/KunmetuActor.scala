@@ -1,6 +1,6 @@
 package org.tejo.iza.actor.cirkulerilo
 
-import akka.actor.Actor
+import akka.actor.{ActorLogging, Actor}
 import org.tejo.iza.actor.cirkulerilo.DissenduActor.Msg.Cirkulero
 import org.tejo.iza.actor.cirkulerilo.redaktilo.Redaktilo
 import org.tejo.iza.actor.msg.RulesFired
@@ -13,21 +13,22 @@ import scaldi.akka.AkkaInjectable
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.ClassTag
 
-class KunmetuActor(implicit inj: Injector) extends Actor with AkkaInjectable with ClaraQueryHandler {
+class KunmetuActor(implicit inj: Injector) extends Actor with AkkaInjectable with ClaraQueryHandler with ActorLogging {
 
-  val iza = injectActorRef [IzaActor]
+//  val iza = injectActorRef [IzaActor]
   implicit val ec = inject [ExecutionContext]
   val tejo = inject [TEJO]
   val redaktilo = inject [Redaktilo]
   val dissenduActor = injectActorRef [DissenduActor]
 
-  def askIzaQuery[T: ClassTag](query: ClaraQuery[T]) = askQuery(query,iza)
 
   override def receive: Receive = {
 
     case RulesFired =>
-      askIzaQuery(KunmetuQuery).flatMap {
-        case Some(_) => askIzaQuery(KontribuintojQuery).map { kontribuojFacts =>
+      log.debug("Rules Fired.")
+      val iza = sender()
+      askQuery(KunmetuQuery, iza).flatMap {
+        case Some(_) => askQuery(KontribuintojQuery, iza).map { kontribuojFacts =>
           val result = redaktilo.redaktu(kontribuojFacts, tejo)
           dissenduActor ! Cirkulero(result)
         }

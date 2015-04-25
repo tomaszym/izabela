@@ -1,11 +1,10 @@
 package org.tejo.iza.rules.test.cirkulero
 
 import org.joda.time.DateTime
-import org.joda.time.format.{ISODateTimeFormat, DateTimeFormatter}
-import org.tejo.iza.rules.facts.control.MemoriguCmd
-import org.tejo.iza.rules.test.RuleTestData
+import org.joda.time.format.{DateTimeFormatter, ISODateTimeFormat}
 import org.tejo.iza.rules._
-import org.tejo.iza.rules.facts.{CheckItemFact, ChecklistFact, CardFact, ListFact}
+import org.tejo.iza.rules.facts.{CardFact, ListFact}
+import org.tejo.iza.rules.test.RuleTestData
 
 object KontribuintojTestData extends RuleTestData {
 
