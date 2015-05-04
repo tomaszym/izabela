@@ -23,5 +23,5 @@ trait IzaActorModule {
 
   lazy val izaActor: ActorRef = actorSystem.actorOf(Props(classOf[IzaActor], trelloService, dissenduActor, kunmetuActor :: Nil),"iza").taggedWith[IzaActorTag]
 
-  val tejoModel = TEJO(Nil, Nil, Nil)
+  lazy val tejoModel: TEJO = TEJO(Nil,Nil,Nil)//TEJO(???,???,???) // TODO PH (sufiĉos elŝuti la datumojn unufoje en/per lazy val)
 }

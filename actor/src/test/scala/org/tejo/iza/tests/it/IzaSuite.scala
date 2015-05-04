@@ -2,6 +2,7 @@ package org.tejo.iza.tests.it
 
 import akka.actor.{ActorRef, ActorSystem}
 import akka.testkit.{ImplicitSender, TestKit, TestProbe}
+import org.joda.time.DateTime
 import org.scalamock.scalatest.MockFactory
 import org.scalatest._
 import org.tejo.iza.actor.IzaActor
@@ -11,7 +12,7 @@ import org.tejo.iza.actor.di.IzaActorModule
 import org.tejo.iza.actor.ws.TrelloService
 import org.tejo.iza.rules.ClojureNamespace
 import org.tejo.iza.rules.facts._
-import org.tejo.model.TEJO
+import org.tejo.model._
 import scala.concurrent.duration._
 
 import scala.concurrent.Future
@@ -30,9 +31,10 @@ class IzaSuite (_system: ActorSystem) extends TestKit(_system) with ImplicitSend
     override def trelloService: TrelloService = trelloMock
 
     override val redaktilo: Redaktilo = new Redaktilo {
-      override def redaktu(kontribuoj: List[CardFact], tejo: TEJO): String = cirkuleroText
+      override def redaktu(kontribuoj: List[Kontribuo], tejo: TEJO): String = cirkuleroText
     }
     override lazy val dissenduActor: ActorRef = dissenduProbe.ref
+    override lazy val tejoModel: TEJO = TEJO(aktivuloj = List(Prezidanto("lukasz@tejo.org", PersonajInformoj("Łukasz Żebrowski", DateTime.now)), GhenSek("tomasz@tejo.org", PersonajInformoj("Tomasz Szymula", DateTime.now))),Nil, Nil)
   }
 
   test("integation test") {

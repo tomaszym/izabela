@@ -9,7 +9,7 @@ import org.tejo.iza.actor.msg.RulesFired
 import org.tejo.iza.rules.facts.control.KunmetuCmd
 import org.tejo.iza.rules.facts.{CardFact, ListFact}
 import org.tejo.iza.rules.{KontribuintojQuery, KunmetuQuery}
-import org.tejo.model.TEJO
+import org.tejo.model.{Kontribuo, TEJO}
 
 import scala.concurrent.{ExecutionContext, Future}
 class KunmetuActor(
@@ -36,7 +36,7 @@ class KunmetuActor(
           iza ! KontribuintojQuery
 
         case kontribuoj: List[CardFact] =>
-          iza ! Cirkulero(redaktilo.redaktu(kontribuoj, tejo))
+          iza ! Cirkulero(redaktilo.redaktu(kontribuoj.map(tejo.kontribuo), tejo))
       }
   }
 
