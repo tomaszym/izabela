@@ -114,7 +114,9 @@ object IzabelaBuild extends Build {
     base = file(actorName),
     settings = buildSettings ++ Seq(
       name := actorName,
-      libraryDependencies ++= actorDependencies
+      libraryDependencies ++= actorDependencies,
+      unmanagedResourceDirectories in Test += baseDirectory.value / "src" / "main" / "templates",
+      unmanagedResourceDirectories in Compile += baseDirectory.value / "src" / "main" / "templates"
     )
   ).dependsOn(rulesProject)
 

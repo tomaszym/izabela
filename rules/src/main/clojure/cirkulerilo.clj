@@ -1,4 +1,4 @@
-(ns cirkulerilo
+ (ns cirkulerilo
   (:import [org.tejo.iza.rules.facts ChecklistFact ListFact CardFact BoardFact CheckItemFact]
            [org.tejo.iza.rules.facts.control AlvokuCmd MemoriguCmd KunmetuCmd])
   (:refer-clojure :exclude [==])
@@ -92,15 +92,6 @@
   "Query to find Kunmetu situation"
   []
   [?kunmetu <- KunmetuCmd])
-;(defn colon-colon [items value] (.$colon$plus$ items value))
-;(defn all-scala-list
-;  ""
-;  ([]
-;    (accumulate
-;      :initial-value (. Vector$ empty())
-;      :reduce-fn (fn [items value] (colon-colon items value))
-;      :combine-fn concat))
-;  )
 
 
 (defquery kontribuintoj-query

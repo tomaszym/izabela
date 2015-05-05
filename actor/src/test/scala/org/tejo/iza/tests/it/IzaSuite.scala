@@ -34,7 +34,7 @@ class IzaSuite (_system: ActorSystem) extends TestKit(_system) with ImplicitSend
       override def redaktu(kontribuoj: List[Kontribuo], tejo: TEJO): String = cirkuleroText
     }
     override lazy val dissenduActor: ActorRef = dissenduProbe.ref
-    override lazy val tejoModel: TEJO = TEJO(aktivuloj = List(Prezidanto("lukasz@tejo.org", PersonajInformoj("Łukasz Żebrowski", DateTime.now)), GhenSek("tomasz@tejo.org", PersonajInformoj("Tomasz Szymula", DateTime.now))),Nil, Nil)
+    override lazy val tejoModel: TEJO = tejoData
   }
 
   test("integation test") {
@@ -65,6 +65,14 @@ class IzaSuite (_system: ActorSystem) extends TestKit(_system) with ImplicitSend
 }
 
 trait TestData {
+
+  val tejoData = TEJO(
+    aktivuloj = List(
+      Prezidanto("lukasz@tejo.org", PersonajInformoj("Łukasz ŻEBROWSKI", DateTime.now)),
+      GhenSek("tomasz@tejo.org", PersonajInformoj("Tomasz SZYMULA", DateTime.now))),
+    komisionoj = Nil,
+    sekcioj = Nil
+  )
 
   val boardId = "<boardId>"
 
