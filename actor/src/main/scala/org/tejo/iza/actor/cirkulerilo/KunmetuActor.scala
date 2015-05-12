@@ -9,7 +9,7 @@ import org.tejo.iza.actor.msg.RulesFired
 import org.tejo.iza.rules.facts.control.KunmetuCmd
 import org.tejo.iza.rules.facts.{CardFact, ListFact}
 import org.tejo.iza.rules.{KontribuintojQuery, KunmetuQuery}
-import org.tejo.model.{Kontribuo, TEJO}
+import org.tejo.xmodel.TEJO
 
 import scala.concurrent.{ExecutionContext, Future}
 class KunmetuActor(

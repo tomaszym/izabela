@@ -5,7 +5,7 @@ import org.tejo.iza.actor.cirkulerilo.redaktilo.{DummyRedaktilo, Redaktilo}
 import org.tejo.iza.actor.{IzaActorTag, IzaActor}
 import org.tejo.iza.actor.cirkulerilo.{DissenduActorTag, KunmetuActorTag, DissenduActor, KunmetuActor}
 import org.tejo.iza.actor.ws.TrelloService
-import org.tejo.model.TEJO
+import org.tejo.xmodel.TEJO
 
 
 trait IzaActorModule {

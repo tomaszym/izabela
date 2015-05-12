@@ -12,7 +12,8 @@ import org.tejo.iza.actor.di.IzaActorModule
 import org.tejo.iza.actor.ws.TrelloService
 import org.tejo.iza.rules.ClojureNamespace
 import org.tejo.iza.rules.facts._
-import org.tejo.model._
+import org.tejo.model.{Gxensek, Prezidanto, Persono}
+import org.tejo.xmodel._
 import scala.concurrent.duration._
 
 import scala.concurrent.Future
@@ -68,8 +69,8 @@ trait TestData {
 
   val tejoData = TEJO(
     aktivuloj = List(
-      Prezidanto("lukasz@tejo.org", PersonajInformoj("Łukasz ŻEBROWSKI", DateTime.now)),
-      GhenSek("tomasz@tejo.org", PersonajInformoj("Tomasz SZYMULA", DateTime.now))),
+      Persono("Łukasz ŻEBROWSKI", "lukasz@tejo.org", None, Prezidanto),
+      Persono("Tomasz SZYMULA", "tomasz@tejo.org", None, Gxensek)),
     komisionoj = Nil,
     sekcioj = Nil
   )

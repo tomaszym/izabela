@@ -103,6 +103,17 @@ object IzabelaBuild extends Build {
     )
   ).enablePlugins(play.PlayScala).dependsOn(actorProject)
 
+  lazy val googleModel = Project(
+    id = "googleModel",
+    base = file("googleModel"),
+    settings = buildSettings ++ Seq(
+      name := "google-model",
+      libraryDependencies ++= List(
+        "com.google.gdata" % "core" % "1.47.1",
+        "com.google.api-client" % "google-api-client" % "1.19.1"
+      )
+    )
+  ).dependsOn(actorProject)
 
   val actorName = "actor"
   val actorDependencies = {

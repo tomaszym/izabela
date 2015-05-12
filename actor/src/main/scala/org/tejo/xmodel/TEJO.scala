@@ -1,11 +1,12 @@
-package org.tejo.model
+package org.tejo.xmodel
 
 import org.tejo.iza.rules.facts.CardFact
+import org.tejo.model.{Persono, Komisiono}
 
-case class TEJO(aktivuloj: List[Aktivulo], komisionoj: List[Komisiono], sekcioj: List[Sekcio]) {
+case class TEJO(aktivuloj: List[Persono], komisionoj: List[Komisiono], sekcioj: List[Sekcio]) {
 
-  private val aktivulojMap: Map[String, Aktivulo] = aktivuloj.map { a =>
-    (a.adreso, a)
+  private val aktivulojMap: Map[String, Persono] = aktivuloj.map { a =>
+    (a.retadreso, a)
   }.toMap
 
   /** Converts trello cards to `Contribution`: takes description
