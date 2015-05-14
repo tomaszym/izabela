@@ -19,7 +19,6 @@ class HtmlRedaktilo extends Redaktilo {
 
     val template: URL = getClass.getResource("/cirkulero.scaml")
 
-    println(template)
     val output = engine.layout(template.getPath, params)
 
 

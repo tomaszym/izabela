@@ -1,11 +1,9 @@
-package org.tejo.iza.tests.it
+package org.tejo.iza.tests
 
 import akka.actor.{ActorRef, ActorSystem}
 import akka.testkit.{ImplicitSender, TestKit, TestProbe}
-import org.joda.time.DateTime
 import org.scalamock.scalatest.MockFactory
 import org.scalatest._
-import org.tejo.iza.actor.IzaActor
 import org.tejo.iza.actor.cirkulerilo.DissenduActor.Msg.Cirkulero
 import org.tejo.iza.actor.cirkulerilo.redaktilo.Redaktilo
 import org.tejo.iza.actor.di.IzaActorModule
@@ -13,9 +11,9 @@ import org.tejo.iza.actor.ws.TrelloService
 import org.tejo.iza.rules.ClojureNamespace
 import org.tejo.iza.rules.facts._
 import org.tejo.model._
-import scala.concurrent.duration._
 
 import scala.concurrent.Future
+import scala.concurrent.duration._
 
 class IzaSuite (_system: ActorSystem) extends TestKit(_system) with ImplicitSender with FunSuiteLike with BeforeAndAfterAll with MockFactory with TestData {
 

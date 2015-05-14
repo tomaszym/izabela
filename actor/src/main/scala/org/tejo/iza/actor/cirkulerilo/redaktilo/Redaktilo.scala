@@ -6,7 +6,3 @@ import org.tejo.model.{TEJO, Kontribuo}
 trait Redaktilo {
   def redaktu(kontribuoj: List[Kontribuo], tejo: TEJO): String
 }
-
-class DummyRedaktilo extends Redaktilo {
-  override def redaktu(kontribuoj: List[Kontribuo], tejo: TEJO): String = "Dummy"
-}

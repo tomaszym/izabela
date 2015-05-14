@@ -1,12 +1,14 @@
 -@ val kontribuoj: List[org.tejo.model.Kontribuo]
 -@ val tejo: org.tejo.model.TEJO
 
-!!!5
+!!! 5
 %html
+    <meta charset="utf-8">
     %title Cirkulero
     %body
         -for(kontribuo <- kontribuoj)
             %div
                 %h2= kontribuo.autoro.nomo
                 %h3= kontribuo.autoro.retadreso
-                %p= kontribuo.text.str
+                :!markdown
+                    #{kontribuo.text.str}

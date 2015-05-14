@@ -13,10 +13,14 @@ case class TEJO(aktivuloj: List[Persono], komisionoj: List[Komisiono], sekcioj: 
     * @param cardFact
     * @return
     */
-  def kontribuo(cardFact: CardFact): Kontribuo = {
-    implicit def str2mrkd(str: String): Markdown = Markdown(str)
+  def kontribuo(cardFact: CardFact): Option[Kontribuo] = {
+    implicit def str2mrkd(str: String): MarkdownValue = MarkdownValue(str)
 
-    Kontribuo(cardFact.desc, aktivulojMap(cardFact.name))
+    if(cardFact.desc != "") {
+      aktivulojMap.get(cardFact.name).map { persono =>
+        Kontribuo(cardFact.desc, persono)
+      }
+    } else None
   }
 
 }

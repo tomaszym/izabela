@@ -6,6 +6,7 @@ import org.tejo.iza.actor.cirkulerilo.DissenduActor.Msg.Cirkulero
 class DissenduActor extends Actor {
   override def receive: Receive = {
     case Cirkulero(str) => println(str)
+      scala.tools.nsc.io.File("cirkulero.html").writeAll(str)
   }
 }
 

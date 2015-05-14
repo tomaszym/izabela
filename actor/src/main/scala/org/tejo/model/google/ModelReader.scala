@@ -60,7 +60,7 @@ object ModelReader {
           KomitatanoC
 
         case Some("komisiito") =>
-          Komisiisto
+          Komisiito
         case Some(s) if s.startsWith("Redaktoro") =>
           Redaktoro
         case Some("volontulo") =>
@@ -69,4 +69,10 @@ object ModelReader {
       Persono(nomo, adreso, trello, rolo)
     }
   }
+
+  def tejo = TEJO(
+    aktivuloj = personoj,
+    komisionoj = komisionoj,
+    sekcioj = List()
+  )
 }

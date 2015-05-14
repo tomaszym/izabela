@@ -19,9 +19,11 @@ trait TrelloService {
 
 class TrelloWS(client: WSClient)(implicit ec: ExecutionContext) extends TrelloService {
 
+  val baseUrl = "https://api.trello.com/1"
+
   def boardFact(boardId: String): Future[BoardFact] = {
     val request = GetBoard(boardId)
-    val boardFuture: Future[BoardJson] = client.url(request.toString()).get().map { response =>
+    val boardFuture: Future[BoardJson] = client.url(baseUrl + request.toString()).get().map { response =>
 
       response.json.validate[BoardJson] match {
         case s: JsSuccess[BoardJson] =>
@@ -36,6 +38,7 @@ class TrelloWS(client: WSClient)(implicit ec: ExecutionContext) extends TrelloSe
       }
     }
     boardFuture.map { json =>
+      println(json)
       BoardFact(json)
     }
   }
@@ -43,7 +46,7 @@ class TrelloWS(client: WSClient)(implicit ec: ExecutionContext) extends TrelloSe
   def checklistFacts(boardId: String): Future[List[(ChecklistFact, List[CheckItemFact])]] = {
     val request = GetBoardChecklists(boardId)
 
-    val checklistFactsFuture: Future[List[ChecklistJson]] = client.url(request.toString()).get().map { response =>
+    val checklistFactsFuture: Future[List[ChecklistJson]] = client.url(baseUrl + request.toString()).get().map { response =>
 
       response.json.validate[List[ChecklistJson]] match {
 
@@ -59,7 +62,7 @@ class TrelloWS(client: WSClient)(implicit ec: ExecutionContext) extends TrelloSe
 
   def listFacts(boardId: String): Future[List[ListFact]] = {
     val request = GetBoardLists(boardId)
-    val listFactsFuture: Future[List[ListJson]] = client.url(request.toString()).get().map { response =>
+    val listFactsFuture: Future[List[ListJson]] = client.url(baseUrl  + request.toString()).get().map { response =>
 
       response.json.validate[List[ListJson]] match {
 
@@ -75,7 +78,7 @@ class TrelloWS(client: WSClient)(implicit ec: ExecutionContext) extends TrelloSe
 
   def cardFacts(boardId: String): Future[List[CardFact]] = {
     val request = GetBoardCards(boardId)
-    val cardFactsFuture: Future[List[CardJson]] = client.url(request.toString).get().map { response =>
+    val cardFactsFuture: Future[List[CardJson]] = client.url(baseUrl + request.toString).get().map { response =>
 
       response.json.validate[List[CardJson]] match {
         case s: JsSuccess[List[CardJson]] => s.get
@@ -90,7 +93,7 @@ class TrelloWS(client: WSClient)(implicit ec: ExecutionContext) extends TrelloSe
 
   def actionFacts(boardId: String): Future[List[ActionFact]] = {
     val request = GetBoardActions(boardId)
-    val actionFactsFuture: Future[List[ActionJson]] = client.url(request.toString).get().map { response =>
+    val actionFactsFuture: Future[List[ActionJson]] = client.url(baseUrl + request.toString).get().map { response =>
 
       response.json.validate[List[ActionJson]] match {
         case s: JsSuccess[List[ActionJson]] => s.get

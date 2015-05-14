@@ -36,7 +36,7 @@ class KunmetuActor(
           iza ! KontribuintojQuery
 
         case kontribuoj: List[CardFact] =>
-          iza ! Cirkulero(redaktilo.redaktu(kontribuoj.map(tejo.kontribuo), tejo))
+          iza ! Cirkulero(redaktilo.redaktu(kontribuoj.flatMap(tejo.kontribuo), tejo))
       }
   }
 

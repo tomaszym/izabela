@@ -45,7 +45,10 @@ object Dependencies {
   lazy val clojureLib = "org.clojure" % "clojure" % "1.7.0-beta1"
   lazy val clojureTime = "clj-time" % "clj-time" % "0.9.0"
 
-  lazy val scalate = "org.scalatra.scalate" %% "scalate-core" % "1.7.0"
+  lazy val scalate = Seq(
+    "org.scalatra.scalate" %% "scalate-core" % "1.7.0",
+    "org.scalatra.scalate" %% "scalamd" % "1.6.1"
+  )
 
   val akkaVersion = "2.3.5"
 
@@ -112,7 +115,7 @@ object IzabelaBuild extends Build {
   val actorName = "actor"
   val actorDependencies = {
     import Dependencies._
-    akka ++ googleSheet ++ List(ws, scalate)
+    akka ++ googleSheet ++ scalate ++ List(ws)
   }
   lazy val actorProject = Project(
     id = actorName,
