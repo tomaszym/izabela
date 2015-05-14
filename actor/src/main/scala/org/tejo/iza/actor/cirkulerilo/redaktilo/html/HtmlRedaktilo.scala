@@ -5,7 +5,7 @@ import java.net.URL
 
 import org.fusesource.scalate._
 import org.tejo.iza.actor.cirkulerilo.redaktilo.Redaktilo
-import org.tejo.xmodel.{Kontribuo, TEJO}
+import org.tejo.model.{TEJO, Kontribuo}
 
 class HtmlRedaktilo extends Redaktilo {
 

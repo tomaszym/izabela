@@ -68,6 +68,11 @@ object Dependencies {
 //    "ch.qos.logback" % "logback-classic" % "1.1.2"
   )
 
+  val googleSheet = Seq(
+    "com.google.gdata" % "core" % "1.47.1",
+    "com.google.api-client" % "google-api-client" % "1.19.1"
+  )
+
   object WebJar {
     lazy val webjar = "org.webjars" %% "webjars-play" % "2.4.0-M2"
     lazy val bootstrap = "org.webjars" % "bootstrap" % "3.3.2"
@@ -103,22 +108,11 @@ object IzabelaBuild extends Build {
     )
   ).enablePlugins(play.PlayScala).dependsOn(actorProject)
 
-  lazy val googleModel = Project(
-    id = "googleModel",
-    base = file("googleModel"),
-    settings = buildSettings ++ Seq(
-      name := "google-model",
-      libraryDependencies ++= List(
-        "com.google.gdata" % "core" % "1.47.1",
-        "com.google.api-client" % "google-api-client" % "1.19.1"
-      )
-    )
-  ).dependsOn(actorProject)
 
   val actorName = "actor"
   val actorDependencies = {
     import Dependencies._
-    akka ++ List(ws, scalate)
+    akka ++ googleSheet ++ List(ws, scalate)
   }
   lazy val actorProject = Project(
     id = actorName,

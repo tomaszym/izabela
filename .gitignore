@@ -31,3 +31,5 @@ project/plugins/project/
 *.snm
 doc/*.pdf
 prez/*.pdf
+
+*.p12

@@ -1,4 +1,4 @@
-package org.tejo.xmodel
+package org.tejo.model
 
 abstract class Sekcio
 

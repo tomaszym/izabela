@@ -12,8 +12,7 @@ import org.tejo.iza.actor.di.IzaActorModule
 import org.tejo.iza.actor.ws.TrelloService
 import org.tejo.iza.rules.ClojureNamespace
 import org.tejo.iza.rules.facts._
-import org.tejo.model.{Gxensek, Prezidanto, Persono}
-import org.tejo.xmodel._
+import org.tejo.model._
 import scala.concurrent.duration._
 
 import scala.concurrent.Future

@@ -1,7 +1,6 @@
-package org.tejo.xmodel
+package org.tejo.model
 
 import org.tejo.iza.rules.facts.CardFact
-import org.tejo.model.{Persono, Komisiono}
 
 case class TEJO(aktivuloj: List[Persono], komisionoj: List[Komisiono], sekcioj: List[Sekcio]) {
 
