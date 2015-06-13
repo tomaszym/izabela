@@ -4,7 +4,7 @@ import akka.actor.{ActorRef, ActorSystem}
 import akka.testkit.{ImplicitSender, TestKit, TestProbe}
 import org.scalamock.scalatest.MockFactory
 import org.scalatest._
-import org.tejo.iza.actor.cirkulerilo.DissenduActor.Msg.Cirkulero
+import org.tejo.iza.actor.cirkulerilo.DissenduActor.Msg.CirkuleroMsg
 import org.tejo.iza.actor.cirkulerilo.redaktilo.Redaktilo
 import org.tejo.iza.actor.di.IzaActorModule
 import org.tejo.iza.actor.ws.TrelloService
@@ -29,7 +29,7 @@ class IzaSuite (_system: ActorSystem) extends TestKit(_system) with ImplicitSend
     override def trelloService: TrelloService = trelloMock
 
     override val redaktilo: Redaktilo = new Redaktilo {
-      override def redaktu(kontribuoj: List[Kontribuo], tejo: TEJO): String = cirkuleroText
+      override def redaktu(kontribuoj: List[Kontribuo], cirkulero: Cirkulero): String = cirkuleroText
     }
     override lazy val dissenduActor: ActorRef = dissenduProbe.ref
     override lazy val tejoModel: TEJO = tejoData
@@ -54,7 +54,7 @@ class IzaSuite (_system: ActorSystem) extends TestKit(_system) with ImplicitSend
 
     iza ! FireRules
 
-    dissenduProbe.expectMsg(20 seconds, Cirkulero(cirkuleroText))
+    dissenduProbe.expectMsg(20 seconds, CirkuleroMsg(cirkuleroText))
   }
 
   override def afterAll() {
@@ -66,8 +66,9 @@ trait TestData {
 
   val tejoData = TEJO(
     aktivuloj = List(
-      Persono("Łukasz ŻEBROWSKI", "lukasz@tejo.org", None, Prezidanto),
-      Persono("Tomasz SZYMULA", "tomasz@tejo.org", None, Gxensek)),
+      Persono("Łukasz ŻEBROWSKI", "lukasz@tejo.org", None, List(Estrarano(Some(Prezidanto)))),
+      Persono("Tomasz SZYMULA", "tomasz@tejo.org", None, List(Estrarano(Some(Gxensek))))
+    ),
     komisionoj = Nil,
     sekcioj = Nil
   )

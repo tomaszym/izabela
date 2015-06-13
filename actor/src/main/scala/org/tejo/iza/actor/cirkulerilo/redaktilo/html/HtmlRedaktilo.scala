@@ -5,11 +5,12 @@ import java.net.URL
 
 import org.fusesource.scalate._
 import org.tejo.iza.actor.cirkulerilo.redaktilo.Redaktilo
-import org.tejo.model.{TEJO, Kontribuo}
+import org.tejo.model.{Cirkulero, TEJO, Kontribuo}
 
 class HtmlRedaktilo extends Redaktilo {
 
-  override def redaktu(kontribuoj: List[Kontribuo], tejo: TEJO): String = {
+  override def redaktu(kontribuoj: List[Kontribuo], cirk: Cirkulero): String = {
+    val tejo = cirk.tejo
 
     val engine = new TemplateEngine
 

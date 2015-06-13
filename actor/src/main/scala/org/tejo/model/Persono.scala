@@ -1,3 +1,3 @@
 package org.tejo.model
 
-case class Persono(nomo: String, retadreso: String, trello: Option[String], rolo: Posteno)
+case class Persono(nomo: String, retadreso: String, trello: Option[String], roloj: List[Posteno])

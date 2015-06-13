@@ -3,7 +3,7 @@ package org.tejo.iza.actor
 import akka.actor.{Actor, ActorLogging, ActorRef}
 import akka.event.LoggingReceive
 import clara.rules.{RuleLoader, WorkingMemory}
-import org.tejo.iza.actor.cirkulerilo.DissenduActor.Msg.Cirkulero
+import org.tejo.iza.actor.cirkulerilo.DissenduActor.Msg.CirkuleroMsg
 import org.tejo.iza.actor.cirkulerilo.DissenduActorTag
 import org.tejo.iza.actor.msg._
 import org.tejo.iza.actor.ws.{FactList, TrelloService}
@@ -69,7 +69,7 @@ class IzaActor(val trello: TrelloService, dissenduActor: ActorRef @@ DissenduAct
       workingMemory = RuleLoader.loadRules(ruleNames:_*)
       log.debug(s"ResetWorkingMemory on working memory: $workingMemory")
 
-    case m@Cirkulero(text) => {
+    case m@CirkuleroMsg(text) => {
       log.debug("Iza havas la cirkuleron: " + text)
       dissenduActor ! m
     }

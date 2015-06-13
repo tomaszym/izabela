@@ -3,13 +3,13 @@ package org.tejo.iza.actor.cirkulerilo
 import akka.actor.{Actor, ActorLogging}
 import org.tejo.iza.actor.ClaraQueryHandler
 import org.tejo.iza.actor.IzaActor.Msg.ClaraQueryResult
-import org.tejo.iza.actor.cirkulerilo.DissenduActor.Msg.Cirkulero
+import org.tejo.iza.actor.cirkulerilo.DissenduActor.Msg.CirkuleroMsg
 import org.tejo.iza.actor.cirkulerilo.redaktilo.Redaktilo
 import org.tejo.iza.actor.msg.RulesFired
 import org.tejo.iza.rules.facts.control.KunmetuCmd
 import org.tejo.iza.rules.facts.{CardFact, ListFact}
 import org.tejo.iza.rules.{KontribuintojQuery, KunmetuQuery}
-import org.tejo.model.TEJO
+import org.tejo.model.{Kontribuo, Cirkulero, TEJO}
 
 import scala.concurrent.{ExecutionContext, Future}
 class KunmetuActor(
@@ -35,8 +35,11 @@ class KunmetuActor(
         case Some(KunmetuCmd(id)) =>
           iza ! KontribuintojQuery
 
-        case kontribuoj: List[CardFact] =>
-          iza ! Cirkulero(redaktilo.redaktu(kontribuoj.flatMap(tejo.kontribuo), tejo))
+        case kontribuoKartoj: List[CardFact] =>
+          val cirk = Cirkulero(tejo)
+          val kontribuoj: List[Kontribuo] = kontribuoKartoj.flatMap(k => cirk.kontribuo(k)).sorted(cirk.kontribuoOrdering)
+
+          iza ! CirkuleroMsg(redaktilo.redaktu(kontribuoj, cirk))
       }
   }
 

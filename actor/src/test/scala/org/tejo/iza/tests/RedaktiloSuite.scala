@@ -2,7 +2,7 @@ package org.tejo.iza.tests
 
 import org.scalatest.WordSpec
 import org.tejo.iza.actor.cirkulerilo.redaktilo.html.HtmlRedaktilo
-import org.tejo.model.{Kontribuo, MarkdownValue}
+import org.tejo.model.{Cirkulero, Kontribuo, MarkdownValue}
 
 
 class RedaktiloSuite extends WordSpec with TestData {
@@ -21,7 +21,7 @@ class RedaktiloSuite extends WordSpec with TestData {
           )
         )
 
-        val res = redaktilo.redaktu(kontribuoj, tejo)
+        val res = redaktilo.redaktu(kontribuoj, Cirkulero(tejo))
 
         assert(res.contains("<ul>"))
         assert(res.contains("verkis KER-raporton"))

@@ -13,3 +13,15 @@ case class Komisiono(
 
 
 
+object Komisiono {
+
+  implicit class RichKomisionoList(komisionoj: List[Komisiono]) {
+
+    def filterKomisiitaj(retadreso: String): List[Komisiono] = {
+      komisionoj.filter(_.komisiitaAdreso == retadreso)
+    }
+    def filterRespondecataj(retadreso: String): List[Komisiono] = {
+      komisionoj.filter(_.estraranaAdreso == retadreso)
+    }
+  }
+}

@@ -8,19 +8,19 @@ case class TEJO(aktivuloj: List[Persono], komisionoj: List[Komisiono], sekcioj: 
     (a.retadreso, a)
   }.toMap
 
-  /** Converts trello cards to `Contribution`: takes description
-    * as content and searches an 'Aktivulo' by name, which should be an email
-    * @param cardFact
-    * @return
-    */
-  def kontribuo(cardFact: CardFact): Option[Kontribuo] = {
-    implicit def str2mrkd(str: String): MarkdownValue = MarkdownValue(str)
+  def findPersonoByRetadreso(retadreso: String): Option[Persono] = aktivulojMap.get(retadreso)
+  def getPersonoByRetadreso(retadreso: String): Persono = findPersonoByRetadreso(retadreso).getOrElse(throw PersonoNeTrovita(retadreso))
 
-    if(cardFact.desc != "") {
-      aktivulojMap.get(cardFact.name).map { persono =>
-        Kontribuo(cardFact.desc, persono)
-      }
-    } else None
-  }
+  private val sekciojMap: Map[String, Sekcio] = sekcioj.map { a =>
+    (a.identigilo, a)
+  }.toMap
+
+  def findSekcioById(id: String): Option[Sekcio] = sekciojMap.get(id)
+  def getSekcioById(id: String): Sekcio = findSekcioById(id).getOrElse(throw SekcioNeTrovita(id))
+
+
 
 }
+
+case class PersonoNeTrovita(retadreso: String) extends RuntimeException("En tejo ne ekzistas persono kun la adreso " + retadreso)
+case class SekcioNeTrovita(id: String) extends RuntimeException("En tejo ne ekzistas Sekcio kun la identigilo " + id)
