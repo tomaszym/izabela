@@ -1,14 +1,17 @@
--@ val kontribuoj: List[org.tejo.model.Kontribuo]
--@ val tejo: org.tejo.model.TEJO
+-@ val cirk: org.tejo.model.Cirkulero
 
 !!! 5
 %html
     <meta charset="utf-8">
     %title Cirkulero
     %body
-        -for(kontribuo <- kontribuoj)
+        %p Al la numero kontribuis:
+        %ol
+            -for(kontribuo <- cirk.kontribuoj)
+                %li= {kontribuo.autoro.nomo + " (" + kontribuo.autoro.roloj.map(_.titolo).mkString(", ") + ")"}
+        -for(kontribuo <- cirk.enskriboj)
             %div
-                %h2= kontribuo.autoro.nomo
-                %h3= kontribuo.autoro.retadreso
+                %h3= kontribuo.autoro.nomo
+                %h4= kontribuo.autoro.roloj.map(r => r.titolo + " " + r.subtitolo.map("(" + _ + ")").getOrElse("")).mkString(", ")
                 :!markdown
                     #{kontribuo.text.str}

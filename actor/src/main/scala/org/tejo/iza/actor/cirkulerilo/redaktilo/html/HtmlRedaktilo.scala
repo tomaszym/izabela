@@ -9,13 +9,13 @@ import org.tejo.model.{Cirkulero, TEJO, Kontribuo}
 
 class HtmlRedaktilo extends Redaktilo {
 
-  override def redaktu(kontribuoj: List[Kontribuo], cirk: Cirkulero): String = {
+  override def redaktu(cirk: Cirkulero): String = {
     val tejo = cirk.tejo
 
     val engine = new TemplateEngine
 
     val params: Map[String, Any] = Map(
-      "kontribuoj" -> kontribuoj, "tejo" -> tejo
+      "cirk" -> cirk
     )
 
     val template: URL = getClass.getResource("/cirkulero.scaml")

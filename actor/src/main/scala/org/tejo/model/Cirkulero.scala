@@ -2,14 +2,23 @@ package org.tejo.model
 
 import org.tejo.iza.rules.facts.CardFact
 
-case class Cirkulero(tejo: TEJO) {
+case class Cirkulero(tejo: TEJO, kontribufaktoj: List[CardFact]) {
+
+  val kontribuoj: List[Kontribuo] = kontribufaktoj.flatMap(kontribuo)
+
+  val enskriboj: List[KontribuEnskribo] = {
+    val nekontribuintajEstraranoj: List[Persono] = tejo.estraro.filterNot(estrarano => kontribuoj.map(_.autoro).contains(estrarano))
+
+
+    (kontribuoj ++ nekontribuintajEstraranoj.map(MankoDeKontribuo)).sorted(enskriboOrdering)
+  }
 
   /** Converts trello cards to `Contribution`: takes description
     * as content and searches an 'Aktivulo' by name, which should be an email
     * @param cardFact
     * @return
     */
-  def kontribuo(cardFact: CardFact): Option[Kontribuo] = {
+  private def kontribuo(cardFact: CardFact): Option[Kontribuo] = {
 
     implicit def str2mrkd(str: String): MarkdownValue = MarkdownValue(str)
 
@@ -36,7 +45,10 @@ case class Cirkulero(tejo: TEJO) {
         case Volontulo => "19999" // post la estraro, antau komisiitoj
 
         case p@Komisiito(k) => "2" + k.plenaNomo
-        case KomitatanoA(s) => "3" + s.plenaNomo
+        case KomitatanoA(s) => "3" + (s match {
+          case ls: LandaSekcio => "1" + s.plenaNomo
+          case fs: FakaSekcio => "2" + s.plenaNomo
+        })
         case KomitatanoB => "4"
         case KomitatanoC => "5"
         case Redaktoro(revuo) => "6" + revuo
@@ -45,5 +57,5 @@ case class Cirkulero(tejo: TEJO) {
 
   implicit def postenoOrdering: Ordering[Posteno] = Ordering.by(_.priority)
 
-  implicit def kontribuoOrdering: Ordering[Kontribuo] = Ordering.by(_.autoro.roloj.sorted.headOption)
+  implicit def enskriboOrdering: Ordering[KontribuEnskribo] = Ordering.by(_.autoro.roloj.sorted.headOption)
 }

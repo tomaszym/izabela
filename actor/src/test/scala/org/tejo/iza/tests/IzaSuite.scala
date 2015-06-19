@@ -29,7 +29,7 @@ class IzaSuite (_system: ActorSystem) extends TestKit(_system) with ImplicitSend
     override def trelloService: TrelloService = trelloMock
 
     override val redaktilo: Redaktilo = new Redaktilo {
-      override def redaktu(kontribuoj: List[Kontribuo], cirkulero: Cirkulero): String = cirkuleroText
+      override def redaktu(cirkulero: Cirkulero): String = cirkuleroText
     }
     override lazy val dissenduActor: ActorRef = dissenduProbe.ref
     override lazy val tejoModel: TEJO = tejoData

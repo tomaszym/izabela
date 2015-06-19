@@ -19,6 +19,9 @@ case class TEJO(aktivuloj: List[Persono], komisionoj: List[Komisiono], sekcioj: 
   def getSekcioById(id: String): Sekcio = findSekcioById(id).getOrElse(throw SekcioNeTrovita(id))
 
 
+  def estraro: List[Persono] = {
+    aktivuloj.filter(_.roloj.exists(_.isInstanceOf[Estrarano]))
+  }
 
 }
 

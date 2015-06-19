@@ -32,7 +32,7 @@ class IzaActor(val trello: TrelloService, dissenduActor: ActorRef @@ DissenduAct
 
   /** Main Receive - no facts loading.
     */
-  override def receive: Receive =  LoggingReceive {
+  override def receive: Receive =  {
 
     case FireRules =>
       log.debug(s"FireRules on working memory: $workingMemory")
@@ -70,7 +70,7 @@ class IzaActor(val trello: TrelloService, dissenduActor: ActorRef @@ DissenduAct
       log.debug(s"ResetWorkingMemory on working memory: $workingMemory")
 
     case m@CirkuleroMsg(text) => {
-      log.debug("Iza havas la cirkuleron: " + text)
+      log.debug("Iza havas la cirkuleron: " + text.take(100))
       dissenduActor ! m
     }
   }

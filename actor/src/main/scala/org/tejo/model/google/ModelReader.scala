@@ -24,8 +24,8 @@ object ModelReader {
         mallongaNomo = c("mallonganomo").getOrElse(""),
         mallongigo = c("mallongigo").getOrElse(""),
         adreso = c("retpoŝtadreso").getOrElse(""),
-        estraranaAdreso = c("estraranaretpoŝtadreso").getOrElse(""),
-        komisiitaAdreso = c("komisiitaretpoŝtadreso"),
+        estraranaAdreso = c("estrarana retpoŝtadreso").getOrElse(""),
+        komisiitaAdreso = c("komisiita retpoŝtadreso"),
         tttAdreso = c("tejo-paĝo").getOrElse(""),
         trelloTabulo = c("publikatrellotabulo"),
         diskutlisto = c("diskutlisto")
@@ -49,7 +49,7 @@ object ModelReader {
       FakaSekcio(
         identigilo = c("identigilo").get,
         mallongigo = c("mallongigo").get,
-        plenaNomo = c("plena nomo").get,
+        plenaNomo = c("plenanomo").get,
         retejo = c("retejo"),
         fejsbukaPagho = c("fejsbukpaĝo")
       )

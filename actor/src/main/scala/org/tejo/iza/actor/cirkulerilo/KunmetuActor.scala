@@ -36,10 +36,9 @@ class KunmetuActor(
           iza ! KontribuintojQuery
 
         case kontribuoKartoj: List[CardFact] =>
-          val cirk = Cirkulero(tejo)
-          val kontribuoj: List[Kontribuo] = kontribuoKartoj.flatMap(k => cirk.kontribuo(k)).sorted(cirk.kontribuoOrdering)
+          val cirk = Cirkulero(tejo, kontribuoKartoj)
 
-          iza ! CirkuleroMsg(redaktilo.redaktu(kontribuoj, cirk))
+          iza ! CirkuleroMsg(redaktilo.redaktu(cirk))
       }
   }
 
