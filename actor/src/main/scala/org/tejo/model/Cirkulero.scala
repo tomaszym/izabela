@@ -4,7 +4,7 @@ import org.tejo.iza.rules.facts.CardFact
 
 case class Cirkulero(tejo: TEJO, kontribufaktoj: List[CardFact]) {
 
-  val kontribuoj: List[Kontribuo] = kontribufaktoj.flatMap(kontribuo)
+  val kontribuoj: List[Kontribuo] = kontribufaktoj.flatMap(kontribuo).sorted(enskriboOrdering)
 
   val enskriboj: List[KontribuEnskribo] = {
     val nekontribuintajEstraranoj: List[Persono] = tejo.estraro.filterNot(estrarano => kontribuoj.map(_.autoro).contains(estrarano))

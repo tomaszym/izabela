@@ -20,14 +20,14 @@ object ModelReader {
   lazy val komisionoj: List[Komisiono] = {
     spreadsheet.readRows("Komisionoj"){c =>
       Komisiono(
-        plenaNomo = c("Plenanomo").get,
+        plenaNomo = c("plenanomo").get,
         mallongaNomo = c("mallonganomo").getOrElse(""),
         mallongigo = c("mallongigo").getOrElse(""),
         adreso = c("retpoŝtadreso").getOrElse(""),
-        estraranaAdreso = c("estrarana retpoŝtadreso").getOrElse(""),
-        komisiitaAdreso = c("komisiita retpoŝtadreso"),
+        estraranaAdreso = c("estrarano").getOrElse(""),
+        komisiitaAdreso = c("komisiito"),
         tttAdreso = c("tejo-paĝo").getOrElse(""),
-        trelloTabulo = c("publikatrellotabulo"),
+        trelloTabulo = c("trello-tabulo"),
         diskutlisto = c("diskutlisto")
       )
     }
